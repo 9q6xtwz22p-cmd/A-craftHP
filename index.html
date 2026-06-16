@@ -247,8 +247,8 @@ nav{display:flex;align-items:center;justify-content:space-between;height:72px}
   letter-spacing:.3em;text-transform:uppercase;color:var(--terra);margin-bottom:10px}
 .sh-en{font-family:var(--syne);font-size:clamp(40px,6vw,80px);font-weight:800;
   letter-spacing:-.03em;line-height:.92;text-transform:uppercase;overflow:hidden}
-.sh-en-inner{display:block;clip-path:inset(0 100% 0 0);transition:clip-path 1s var(--ease)}
-.sh-en-inner.on{clip-path:inset(0 0% 0 0)}
+.sh-en-inner{display:block;opacity:0;transform:translateY(24px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.sh-en-inner.on{opacity:1;transform:none}
 .sh-en em{font-family:var(--corm);font-style:italic;font-weight:400;
   font-size:1.08em;color:var(--terra);letter-spacing:0}
 .sh-ja{font-size:12px;letter-spacing:.16em;color:var(--muted);margin-top:10px}
@@ -1329,7 +1329,7 @@ document.querySelectorAll('.rv,.rv-s').forEach(el=>obs.observe(el));
 
 const co=new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');co.unobserve(e.target)}});
-},{threshold:.2});
+},{threshold:.05,rootMargin:'0px 0px -60px 0px'});
 document.querySelectorAll('.sh-en-inner').forEach(el=>co.observe(el));
 
 /* ── 8. COUNT-UP ── */
