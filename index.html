@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>A-CRAFT 内装事業部</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;600;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f3f0ea;--ink:#080808;--white:#fff;--muted:#888;--line:#ddd9d2;
+  --terra:#c84e22;--sand:#e2d9c8;--forest:#2a5c3f;--navy:#1a2d4a;--olive:#5c4a1a;
+  --syne:'Space Grotesk',sans-serif;--corm:'Cormorant Garamond',serif;
+  --en:'Inter',sans-serif;--ja:'Noto Sans JP',sans-serif;
+  --spring:cubic-bezier(.34,1.56,.64,1);--ease:cubic-bezier(.4,0,.2,1)
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--ja);background:var(--bg);color:var(--ink);overflow-x:hidden;cursor:none}
+
+/* GRAIN */
+body::after{content:'';position:fixed;inset:0;z-index:8000;pointer-events:none;opacity:.4;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E")}
+
+/* CURSOR */
+#cur{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;width:12px;height:12px;
+  background:var(--ink);border-radius:50%;transform:translate(-50%,-50%);
+  transition:width .35s var(--spring),height .35s var(--spring),background .3s,opacity .3s}
+#ring{position:fixed;top:0;left:0;z-index:9998;pointer-events:none;width:48px;height:48px;
+  border:1px solid rgba(8,8,8,.2);border-radius:50%;transform:translate(-50%,-50%);
+  transition:width .45s var(--spring),height .45s var(--spring),opacity .3s}
+#cur-text{position:fixed;top:0;left:0;z-index:9997;pointer-events:none;
+  transform:translate(-50%,-50%);font-family:var(--en);font-size:9px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--white);
+  opacity:0;transition:opacity .3s;white-space:nowrap;text-align:center}
+body.c-link #cur{width:52px;height:52px;background:var(--terra);opacity:.22}
+body.c-link #ring{opacity:0}
+body.c-work #cur{width:88px;height:88px;background:var(--white);mix-blend-mode:difference}
+body.c-work #ring{opacity:0}
+body.c-work #cur-text{opacity:1}
+body.c-mag #cur{width:10px;height:10px}
+
+/* NAV */
+header{position:fixed;top:0;left:0;right:0;z-index:600;padding:0 48px}
+nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{font-family:var(--syne);font-size:15px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--white);text-decoration:none;mix-blend-mode:difference}
+.nav-links{display:flex;gap:44px;list-style:none}
+.nav-links a{font-family:var(--en);font-size:9px;font-weight:600;letter-spacing:.24em;
+  text-transform:uppercase;color:rgba(255,255,255,.5);text-decoration:none;mix-blend-mode:difference;
+  position:relative;transition:color .2s}
+.nav-links a::after{content:'';position:absolute;bottom:-2px;left:0;right:100%;
+  height:1px;background:var(--white);transition:right .3s var(--ease)}
+.nav-links a:hover{color:#fff}
+.nav-links a:hover::after{right:0}
+
+/* ═══ HERO ═══ */
+.hero{position:relative;height:100vh;min-height:640px;background:var(--ink);
+  display:flex;flex-direction:column;overflow:hidden}
+#particle-canvas{position:absolute;inset:0;z-index:0;display:block}
+
+/* 細い縦ラインのアクセント */
+.hero-vline{position:absolute;top:0;right:calc(clamp(120px,18vw,220px) + 60px);width:1px;height:100%;z-index:2;
+  background:linear-gradient(to bottom,transparent,rgba(200,78,34,.25) 30%,rgba(200,78,34,.25) 70%,transparent);
+  transform:scaleY(0);transform-origin:top;animation:vlineIn 1.4s var(--ease) .3s forwards}
+@keyframes vlineIn{to{transform:scaleY(1)}}
+
+/* トップラベル行 */
+.hero-labels{position:absolute;top:96px;left:48px;right:48px;z-index:3;
+  display:flex;align-items:center;justify-content:space-between;
+  opacity:0;animation:fuIn .7s var(--ease) .2s forwards}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;font-family:var(--en);
+  font-size:9px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.badge-dot{width:4px;height:4px;background:var(--terra);border-radius:50%;
+  animation:bdot 2.2s ease-in-out infinite}
+@keyframes bdot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(2.5);opacity:.3}}
+.hero-est{font-family:var(--en);font-size:9px;font-weight:300;letter-spacing:.28em;color:rgba(255,255,255,.22)}
+
+/* スペーサー：コンテンツを下半分に寄せる */
+.hero-spacer{flex:1}
+
+/* 水平ルール */
+.hero-rule{position:relative;z-index:3;height:1px;background:rgba(255,255,255,.08)}
+.hero-rule::after{content:'';position:absolute;left:0;top:0;height:100%;
+  width:0;background:var(--terra);opacity:.55;animation:rIn 1.2s var(--ease) .6s forwards}
+@keyframes rIn{to{width:22%}}
+
+/* コピーとCTAを含む中間行 */
+.hero-mid{position:relative;z-index:3;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  padding:28px 48px;opacity:0;animation:fuIn .8s var(--ease) .8s forwards}
+@keyframes fuIn{to{opacity:1}}
+.hero-copy-ja{font-family:var(--corm);font-size:clamp(22px,3.2vw,46px);
+  font-weight:400;font-style:italic;line-height:1.35;color:rgba(0,0,0,.75)}
+
+/* A-CRAFT */
+.hero-brand{position:relative;z-index:3;padding:0 44px 0;line-height:.84;overflow:visible}
+.hero-brand-inner{display:flex;align-items:baseline;overflow:visible}
+.hero-letter{
+  font-family:var(--syne);
+  font-size:clamp(72px,16.5vw,220px);
+  font-weight:700;letter-spacing:-.03em;text-transform:uppercase;
+  color:var(--white);display:inline-block;opacity:0;will-change:transform;transition:color .15s,-webkit-text-stroke .15s}
+.hero-letter.ol{
+  -webkit-text-stroke:2px var(--white);
+  color:transparent!important}
+.hero-letter.ol:hover{-webkit-text-stroke-color:var(--terra)!important}
+.hero-letter:not(.ol):hover{color:var(--terra)!important}
+
+/* グレインテクスチャ */
+.hero::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:.06;mix-blend-mode:overlay}
+
+/* ═══ RECRUIT ═══ */
+.recruit-hero{background:var(--ink);color:var(--white);padding:clamp(80px,10vw,140px) 0 0}
+.recruit-hero .wrap{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:end;padding-bottom:clamp(60px,8vw,100px)}
+.recruit-tag{font-family:var(--en);font-size:9px;font-weight:600;letter-spacing:.32em;
+  text-transform:uppercase;color:var(--terra);margin-bottom:20px}
+.recruit-headline{font-family:var(--syne);font-size:clamp(36px,5.5vw,72px);font-weight:700;
+  line-height:.95;letter-spacing:-.02em}
+.recruit-headline em{font-style:italic;font-family:var(--corm);font-weight:400;
+  color:rgba(255,255,255,.45)}
+.recruit-catch{font-size:14px;line-height:2;color:rgba(255,255,255,.55);max-width:400px}
+.recruit-numbers{display:flex;gap:48px;margin-top:40px}
+.rn-item{}
+.rn-num{font-family:var(--syne);font-size:clamp(32px,4vw,52px);font-weight:700;color:var(--terra);line-height:1}
+.rn-label{font-family:var(--en);font-size:9px;font-weight:600;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:6px}
+
+/* 求人カード */
+.job-grid{padding:clamp(48px,6vw,80px) 0;background:var(--ink)}
+.job-grid .wrap{}
+.job-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.06)}
+.job-card{background:var(--ink);padding:clamp(28px,3vw,44px);cursor:pointer;
+  border:1px solid rgba(255,255,255,.07);
+  transition:background .3s,border-color .3s;position:relative;overflow:hidden}
+.job-card::before{content:'';position:absolute;inset:0;background:var(--terra);
+  transform:translateY(101%);transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.job-card:hover{border-color:var(--terra)}
+.job-card:hover::before{transform:translateY(0)}
+.job-card:hover .jc-title,.job-card:hover .jc-tag,.job-card:hover .jc-arrow,
+.job-card:hover .jc-meta{color:var(--white)!important}
+.jc-tag{font-family:var(--en);font-size:8px;font-weight:700;letter-spacing:.3em;
+  text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:20px;
+  position:relative;z-index:1;transition:color .3s}
+.jc-title{font-family:var(--syne);font-size:clamp(18px,2.2vw,28px);font-weight:700;
+  color:var(--white);line-height:1.2;margin-bottom:16px;
+  position:relative;z-index:1;transition:color .3s}
+.jc-meta{font-size:12px;color:rgba(255,255,255,.4);line-height:1.9;
+  position:relative;z-index:1;transition:color .3s}
+.jc-arrow{position:absolute;bottom:clamp(20px,2.5vw,36px);right:clamp(20px,2.5vw,36px);
+  font-family:var(--en);font-size:18px;color:rgba(255,255,255,.2);
+  position:relative;z-index:1;transition:color .3s;align-self:flex-end;margin-top:auto}
+.job-card-inner{display:flex;flex-direction:column;height:100%}
+.jc-bottom{display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px}
+.jc-type{display:inline-block;font-family:var(--en);font-size:8px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;
+  padding:5px 12px;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.4);
+  border-radius:2px;position:relative;z-index:1;transition:border-color .3s,color .3s}
+.job-card:hover .jc-type{border-color:rgba(255,255,255,.6);color:var(--white)}
+
+/* 求人フォームバナー */
+.recruit-cta{background:var(--terra);padding:clamp(48px,6vw,80px) 0}
+.recruit-cta .wrap{display:flex;align-items:center;justify-content:space-between;gap:32px}
+.rcta-text{}
+.rcta-title{font-family:var(--syne);font-size:clamp(22px,3vw,38px);font-weight:700;
+  color:var(--white);line-height:1.2;margin-bottom:8px}
+.rcta-sub{font-size:13px;color:rgba(255,255,255,.75)}
+.rcta-btn{flex-shrink:0;display:inline-flex;align-items:center;gap:12px;
+  font-family:var(--syne);font-size:11px;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--terra);background:var(--white);
+  padding:18px 36px;text-decoration:none;
+  transition:background .25s,color .25s}
+.rcta-btn:hover{background:var(--ink);color:var(--white)}
+
+/* テラコッタアクセントパネル */
+.hero-accent{position:absolute;top:0;right:0;width:clamp(100px,14vw,180px);height:100%;
+  background:var(--terra);z-index:1;
+  clip-path:polygon(28% 0,100% 0,100% 100%,0% 100%);
+  opacity:.88}
+
+/* 大きな装飾サークル */
+.hero-ring{position:absolute;z-index:2;pointer-events:none;
+  top:50%;left:50%;
+  width:clamp(340px,55vw,700px);height:clamp(340px,55vw,700px);
+  transform:translate(-52%,-54%);
+  border-radius:50%;border:1px solid rgba(255,255,255,.1);
+  opacity:0;animation:fuIn 1.8s var(--ease) .6s forwards}
+.hero-ring::before{content:'';position:absolute;
+  inset:clamp(24px,4vw,52px);border-radius:50%;
+  border:1px solid rgba(255,255,255,.05)}
+.hero-ring::after{content:'';position:absolute;
+  top:50%;left:50%;
+  width:clamp(8px,1.2vw,14px);height:clamp(8px,1.2vw,14px);
+  transform:translate(-50%,-50%);
+  border-radius:50%;background:var(--terra);opacity:.5}
+
+/* ハイフン */
+.hero-hyph{color:var(--terra)!important;opacity:1!important;display:inline-block}
+
+/* CTAボタン：A-CRAFTの上に絶対配置 */
+.mag-wrap{position:absolute;z-index:5;
+  bottom:clamp(60px,11vw,145px);
+  right:clamp(180px,22vw,300px)}
+.btn-circle{display:flex;align-items:center;justify-content:center;
+  width:clamp(100px,10vw,136px);height:clamp(100px,10vw,136px);
+  border-radius:50%;background:var(--white);color:var(--ink);font-family:var(--syne);
+  font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  text-decoration:none;text-align:center;line-height:1.7;
+  transition:background .3s,color .3s;position:relative;z-index:1}
+.btn-circle:hover{background:var(--terra);color:var(--white)}
+.hero .btn-circle{background:var(--white);color:var(--ink)}
+.hero .btn-circle:hover{background:var(--terra);color:var(--white)}
+
+/* フッター行：説明文 + スクロール */
+.hero-foot{position:relative;z-index:3;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 48px 40px;
+  opacity:0;animation:fuIn .8s var(--ease) 1s forwards}
+.hero-desc{font-size:12px;line-height:2;color:rgba(255,255,255,.35);max-width:320px}
+
+.scroll-ind{display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-family:var(--en);font-size:7px;letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(255,255,255,.22)}
+.s-line{width:1px;height:48px;background:linear-gradient(to bottom,rgba(0,0,0,.2),transparent);
+  animation:sdrip 2s ease-in-out infinite}
+@keyframes sdrip{0%{transform:scaleY(0) translateY(-100%);opacity:0}30%{opacity:1}100%{transform:scaleY(1) translateY(0);opacity:0}}
+
+/* ═══ MARQUEE ═══ */
+.mq-wrap{overflow:hidden;background:var(--terra);padding:14px 0}
+.mq-track{display:flex;width:max-content;animation:mq 22s linear infinite}
+.mq-item{display:inline-flex;align-items:center;gap:24px;padding:0 24px;
+  font-family:var(--syne);font-size:12px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.7);white-space:nowrap}
+.mq-item .dot{width:3px;height:3px;background:rgba(255,255,255,.5);border-radius:50%;flex-shrink:0}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ═══ SECTION ═══ */
+.sec{padding:120px 48px}
+.sec--w{background:var(--white)}
+.sec--off{background:var(--bg)}
+.wrap{max-width:1200px;margin:0 auto}
+
+.sh{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:80px}
+.sh-l{}
+.sh-tag{font-family:var(--en);font-size:9px;font-weight:600;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--terra);margin-bottom:10px}
+.sh-en{font-family:var(--syne);font-size:clamp(40px,6vw,80px);font-weight:800;
+  letter-spacing:-.03em;line-height:.92;text-transform:uppercase;overflow:hidden}
+.sh-en-inner{display:block;clip-path:inset(0 100% 0 0);transition:clip-path 1s var(--ease)}
+.sh-en-inner.on{clip-path:inset(0 0% 0 0)}
+.sh-en em{font-family:var(--corm);font-style:italic;font-weight:400;
+  font-size:1.08em;color:var(--terra);letter-spacing:0}
+.sh-ja{font-size:12px;letter-spacing:.16em;color:var(--muted);margin-top:10px}
+.sh-r{font-size:13px;color:var(--muted);line-height:2;max-width:260px;text-align:right}
+
+.arrow-link{display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--en);font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;transition:gap .3s var(--spring)}
+.arrow-link::after{content:'→';font-size:13px}
+.arrow-link:hover{gap:18px}
+
+/* ═══ ABOUT ═══ */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px}
+
+/* 回転バッジ付きビジュアル */
+.about-visual{background:var(--sand);min-height:500px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  transition:transform .6s var(--spring)}
+.about-visual:hover{transform:rotate(-1.5deg) scale(1.02)}
+.about-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transition:transform .8s var(--ease)}
+.about-visual:hover img{transform:scale(1.06)}
+.av-deco{position:absolute;top:-16px;right:-16px;
+  font-family:var(--syne);font-size:180px;font-weight:800;
+  letter-spacing:-.05em;color:rgba(0,0,0,.04);line-height:1;
+  pointer-events:none;user-select:none}
+.av-label{position:absolute;bottom:24px;left:24px;
+  font-family:var(--en);font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:rgba(0,0,0,.28)}
+
+/* 回転SVGバッジ */
+.spin-badge{
+  position:absolute;bottom:-28px;right:-28px;
+  width:120px;height:120px;
+  animation:spin 12s linear infinite}
+.spin-badge text{fill:var(--ink);font-size:9.5px;font-family:var(--en);font-weight:600;letter-spacing:2.4px}
+.spin-badge circle{fill:var(--terra)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.about-content{background:var(--white);padding:64px 56px;display:flex;flex-direction:column;justify-content:center}
+.about-yr{font-family:var(--syne);font-size:clamp(56px,8vw,108px);font-weight:800;
+  letter-spacing:-.04em;color:rgba(0,0,0,.05);line-height:1;margin-bottom:28px;
+  transition:color .4s}
+.about-content:hover .about-yr{color:rgba(200,78,34,.08)}
+.about-text{font-size:15px;line-height:2.1;color:#444}
+.about-text+.about-text{margin-top:18px}
+
+/* MARQUEE */
+.marquee-wrap{overflow:hidden;border-top:1px solid rgba(0,0,0,.08);
+  border-bottom:1px solid rgba(0,0,0,.08);padding:0;background:var(--white)}
+.marquee-track{display:flex;width:max-content;animation:marquee 22s linear infinite}
+.marquee-track:hover{animation-play-state:paused}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marquee-item{display:flex;align-items:center;gap:0;white-space:nowrap;padding:22px 0}
+.marquee-word{font-family:var(--syne);font-size:clamp(18px,2.2vw,26px);font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;padding:0 32px;color:var(--ink)}
+.marquee-dot{width:6px;height:6px;border-radius:50%;background:var(--terra);flex-shrink:0}
+.marquee-word.accent{color:var(--terra)}
+.st::before{content:'';position:absolute;inset:0;background:var(--terra);
+  transform:translateY(101%);transition:transform .5s var(--ease);z-index:0}
+.st:hover::before{transform:translateY(0)}
+.st-v{font-family:var(--syne);font-size:clamp(36px,5vw,60px);font-weight:800;
+  letter-spacing:-.03em;line-height:1;margin-bottom:8px;
+  position:relative;z-index:1;transition:color .3s}
+.st-v sup{font-size:.42em}
+.st:hover .st-v{color:var(--white)}
+.st-l{font-size:11px;letter-spacing:.1em;color:var(--muted);position:relative;z-index:1;transition:color .3s}
+.st:hover .st-l{color:rgba(255,255,255,.7)}
+
+/* ═══ SERVICE – カラーホバー ═══ */
+.svc-grid{display:grid;grid-template-columns:360px 1fr;gap:64px;align-items:start}
+.svc-sticky{position:sticky;top:96px}
+.svc-desc{font-size:15px;line-height:2.1;color:#444;margin-bottom:40px}
+.svc-list{display:flex;flex-direction:column}
+
+.svc{display:flex;align-items:center;justify-content:space-between;
+  padding:28px 0;border-bottom:1px solid var(--line);
+  text-decoration:none;color:var(--ink);position:relative;overflow:hidden;
+  transition:padding-left .4s var(--ease)}
+.svc:first-child{border-top:1px solid var(--line)}
+.svc::before{content:'';position:absolute;inset:0;transform:translateX(-101%);
+  transition:transform .5s var(--ease);z-index:0}
+/* 各サービスの色 */
+.svc:nth-child(1)::before{background:var(--terra)}
+.svc:nth-child(2)::before{background:var(--forest)}
+.svc:nth-child(3)::before{background:var(--navy)}
+.svc:nth-child(4)::before{background:var(--olive)}
+.svc:nth-child(5)::before{background:var(--ink)}
+.svc:hover::before{transform:translateX(0)}
+.svc:hover{padding-left:20px}
+.svc:hover .svc-n,.svc:hover .svc-name,.svc:hover .svc-a{color:var(--white)}
+
+.svc-l{display:flex;align-items:center;gap:28px;position:relative;z-index:1}
+.svc-n{font-family:var(--syne);font-size:11px;font-weight:800;letter-spacing:.1em;
+  color:var(--muted);transition:color .3s,transform .4s var(--spring);min-width:22px}
+.svc:hover .svc-n{transform:scale(1.4) translateX(4px)}
+.svc-name{font-family:var(--syne);font-size:17px;font-weight:700;
+  letter-spacing:.01em;transition:color .3s}
+.svc-a{font-size:20px;color:var(--line);position:relative;z-index:1;
+  transition:color .3s,transform .4s var(--spring)}
+.svc:hover .svc-a{transform:translateX(6px) rotate(-45deg)}
+
+/* ═══ GALLERY ═══ */
+.gallery-scroll{display:flex;gap:4px;overflow-x:auto;overflow-y:hidden;
+  padding:0 48px 16px;cursor:grab;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.gallery-scroll::-webkit-scrollbar{display:none}
+.gallery-scroll.dragging{cursor:grabbing}
+.gl-item{flex:0 0 auto;width:240px;height:160px;overflow:hidden;position:relative;cursor:pointer}
+.gl-item img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .6s var(--ease),filter .4s}
+.gl-item:hover img{transform:scale(1.07);filter:brightness(.8)}
+.gl-item::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .3s}
+.gl-item:hover::after{background:rgba(0,0,0,.08)}
+
+/* ═══ CASES – 施工事例 ═══ */
+.case-cat-block{margin-bottom:48px}
+.case-cat-block:last-child{margin-bottom:0}
+.case-cat-label{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+.case-cat-num{font-family:var(--en);font-size:10px;letter-spacing:.2em;
+  color:var(--terra);text-transform:uppercase}
+.case-cat-name{font-family:var(--syne);font-size:11px;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--ink)}
+.case-cat-line{flex:1;height:1px;background:rgba(0,0,0,.1)}
+.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.case-card{position:relative;overflow:hidden;aspect-ratio:3/4;cursor:pointer}
+.case-card img{width:100%;height:100%;object-fit:cover;
+  transition:transform .8s var(--ease)}
+.case-card:hover img{transform:scale(1.09)}
+.case-overlay{position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(8,8,8,.82) 0%,rgba(8,8,8,0) 55%);
+  display:flex;flex-direction:column;justify-content:flex-end;padding:32px;
+  transition:background .5s}
+.case-card:hover .case-overlay{
+  background:linear-gradient(to top,rgba(200,78,34,.85) 0%,rgba(8,8,8,.15) 55%)}
+.case-c{font-family:var(--en);font-size:8px;font-weight:700;
+  letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px}
+.case-n{font-family:var(--syne);font-size:clamp(20px,2.5vw,28px);font-weight:700;
+  color:#fff;line-height:1.15;margin-bottom:6px}
+.case-cnt{font-family:var(--en);font-size:10px;
+  color:rgba(255,255,255,.38);letter-spacing:.12em}
+.case-icon{position:absolute;top:22px;right:22px;
+  width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:#fff;
+  opacity:0;transform:scale(.8);
+  transition:opacity .35s,transform .35s var(--spring)}
+.case-card:hover .case-icon{opacity:1;transform:scale(1)}
+
+/* ═══ PHOTO OVERLAY ═══ */
+.lb{position:fixed;inset:0;z-index:7000;background:var(--ink);
+  display:none;flex-direction:column;overflow:hidden;
+  opacity:0;transition:opacity .35s}
+.lb.open{display:flex}
+.lb.visible{opacity:1}
+
+/* 背景：巨大プロジェクト名 */
+.lb-bg-title{position:absolute;bottom:-0.15em;left:-.02em;
+  font-family:var(--syne);font-size:clamp(100px,18vw,240px);font-weight:800;
+  letter-spacing:-.04em;text-transform:uppercase;
+  color:rgba(255,255,255,.04);pointer-events:none;white-space:nowrap;
+  line-height:1;user-select:none}
+
+.lb-header{position:relative;z-index:2;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 32px 16px}
+.lb-info{display:flex;align-items:baseline;gap:16px}
+.lb-title{font-family:var(--syne);font-size:15px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:#fff}
+.lb-meta{font-family:var(--en);font-size:9px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--terra)}
+.lb-close{font-size:22px;color:rgba(255,255,255,.4);cursor:none;
+  transition:color .2s;line-height:1}
+.lb-close:hover{color:#fff}
+
+/* グリッド — 縦横を画面いっぱいに */
+.lb-grid{position:relative;z-index:2;flex:1;
+  display:grid;gap:4px;overflow:hidden;
+  padding:0 4px 4px}
+/* JS でカラム数・行高を動的に設定 */
+.lb-grid-item{overflow:hidden;cursor:pointer;position:relative;min-height:0}
+.lb-grid-item img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .55s var(--ease),filter .4s}
+.lb-grid-item:hover img{transform:scale(1.06);filter:brightness(.75)}
+.lb-grid-item::after{content:'';position:absolute;inset:0;
+  background:rgba(200,78,34,0);transition:background .3s}
+.lb-grid-item:hover::after{background:rgba(200,78,34,.08)}
+
+/* 拡大 */
+.lb-zoom{position:fixed;inset:0;z-index:7100;background:rgba(8,8,8,.95);
+  display:none;align-items:center;justify-content:center}
+.lb-zoom.open{display:flex}
+.lb-zoom img{max-width:90vw;max-height:90vh;object-fit:contain;cursor:default}
+.lb-zoom-close{position:absolute;top:18px;right:24px;
+  font-size:22px;color:rgba(255,255,255,.4);cursor:none;transition:color .2s}
+.lb-zoom-close:hover{color:#fff}
+.lb-zoom-arr{position:absolute;top:50%;transform:translateY(-50%);
+  width:46px;height:46px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;color:#fff;cursor:none;transition:background .2s}
+.lb-zoom-arr:hover{background:var(--terra);border-color:var(--terra)}
+.lb-zoom-prev{left:16px}.lb-zoom-next{right:16px}
+.lb-zoom-counter{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+  font-family:var(--en);font-size:9px;letter-spacing:.2em;color:rgba(255,255,255,.28)}
+
+/* ═══ FEATURE – フリップカード ═══ */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.feat{background:var(--bg);padding:56px 40px;position:relative;overflow:hidden;
+  transition:background .45s}
+.feat:hover{background:var(--ink)}
+
+/* 大きな番号がフリップ */
+.feat-n-wrap{perspective:400px;margin-bottom:20px}
+.feat-n{font-family:var(--syne);font-size:80px;font-weight:800;letter-spacing:-.04em;
+  color:rgba(0,0,0,.06);line-height:1;display:inline-block;
+  transition:transform .55s var(--ease),color .45s}
+.feat:hover .feat-n{color:rgba(255,255,255,.06);transform:rotateX(360deg)}
+
+.feat-t{font-family:var(--syne);font-size:17px;font-weight:700;margin-bottom:14px;
+  line-height:1.4;transition:color .4s}
+.feat-b{font-size:13px;line-height:1.9;color:var(--muted);transition:color .4s}
+.feat:hover .feat-t{color:var(--white)}
+.feat:hover .feat-b{color:rgba(255,255,255,.5)}
+
+/* ═══ CTA SPLIT ═══ */
+.cta-split{display:grid;grid-template-columns:1fr 1fr;min-height:420px}
+.cta-p{display:flex;flex-direction:column;justify-content:flex-end;padding:64px 56px;
+  text-decoration:none;position:relative;overflow:hidden;
+  transition:padding-left .4s var(--ease)}
+.cta-p:hover{padding-left:72px}
+.cta-p--ink{background:var(--ink);color:var(--white)}
+.cta-p--terra{background:var(--terra);color:var(--white)}
+.cta-p::before{content:attr(data-bg);position:absolute;top:20px;left:40px;
+  font-family:var(--syne);font-size:clamp(64px,10vw,130px);font-weight:800;
+  letter-spacing:-.04em;line-height:1;color:rgba(255,255,255,.04);pointer-events:none}
+.cta-label{font-family:var(--en);font-size:8px;font-weight:700;
+  letter-spacing:.3em;text-transform:uppercase;opacity:.4;margin-bottom:14px}
+.cta-title{font-family:var(--syne);font-size:clamp(16px,2vw,22px);font-weight:700;
+  letter-spacing:.01em;margin-bottom:10px}
+.cta-body{font-size:13px;line-height:1.9;opacity:.65;margin-bottom:36px;max-width:280px}
+.mag-btn{display:inline-flex;align-items:center;gap:12px;
+  font-family:var(--en);font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;
+  color:inherit;border:1px solid rgba(255,255,255,.3);padding:14px 28px;width:fit-content;
+  transition:gap .3s var(--spring),border-color .3s}
+.cta-p:hover .mag-btn{gap:20px;border-color:rgba(255,255,255,.7)}
+
+/* ═══ CONTACT ═══ */
+.contact-layout{display:grid;grid-template-columns:340px 1fr;gap:80px}
+.c-sticky{position:sticky;top:96px}
+.c-body{font-size:14px;line-height:2.1;color:var(--muted);margin-bottom:48px}
+.c-list{display:flex;flex-direction:column;gap:28px}
+.c-lbl{font-family:var(--en);font-size:8px;font-weight:700;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--terra);margin-bottom:5px}
+.c-val{font-size:14px;color:var(--ink);line-height:1.7}
+
+.form{display:flex;flex-direction:column;gap:24px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fg{display:flex;flex-direction:column;gap:8px}
+.fg label{font-family:var(--en);font-size:8px;font-weight:700;
+  letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
+.fg label .r{color:var(--terra)}
+
+/* フォーカスでボックスが浮かぶ */
+input,select,textarea{
+  font-family:var(--ja);font-size:14px;color:var(--ink);
+  background:transparent;border:none;border-bottom:1px solid var(--line);
+  padding:12px 4px;outline:none;-webkit-appearance:none;
+  transition:border-color .3s,transform .3s var(--spring),box-shadow .3s}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--terra);
+  transform:translateY(-2px);
+  box-shadow:0 4px 20px rgba(200,78,34,.1)}
+textarea{min-height:130px;resize:vertical}
+
+.form-note{font-size:11px;color:var(--muted);line-height:1.8}
+.submit{display:inline-flex;align-items:center;gap:16px;padding:20px 52px;
+  background:var(--ink);color:var(--white);border:none;
+  font-family:var(--syne);font-size:11px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;cursor:none;
+  align-self:flex-start;transition:gap .3s var(--spring),background .3s}
+.submit:hover{gap:28px;background:var(--terra)}
+
+/* ═══ FOOTER ═══ */
+footer{background:var(--ink);padding:64px 48px 40px;color:rgba(255,255,255,.4)}
+.ft{max-width:1200px;margin:0 auto}
+.ft-top{display:flex;justify-content:space-between;align-items:flex-start;
+  padding-bottom:56px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:32px}
+.ft-logo{font-family:var(--syne);font-size:26px;font-weight:800;
+  letter-spacing:.08em;color:var(--white);margin-bottom:4px}
+.ft-tag{font-family:var(--en);font-size:8px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--terra);margin-bottom:24px}
+.ft-addr{font-size:12px;line-height:1.9}
+.ft-nav{display:flex;flex-direction:column;gap:16px;list-style:none}
+.ft-nav a{font-family:var(--en);font-size:9px;font-weight:600;letter-spacing:.24em;
+  text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s}
+.ft-nav a:hover{color:var(--white)}
+.ft-copy{font-family:var(--en);font-size:9px;letter-spacing:.14em;color:rgba(255,255,255,.2)}
+
+/* ═══ REVEAL ═══ */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv.on{opacity:1;transform:none}
+.rv-s>*{opacity:0;transform:translateY(16px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv-s.on>*:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.rv-s.on>*:nth-child(2){opacity:1;transform:none;transition-delay:.1s}
+.rv-s.on>*:nth-child(3){opacity:1;transform:none;transition-delay:.2s}
+.rv-s.on>*:nth-child(4){opacity:1;transform:none;transition-delay:.3s}
+.rv-s.on>*:nth-child(5){opacity:1;transform:none;transition-delay:.4s}
+
+/* ═══ RESP ═══ */
+@media(max-width:960px){
+  header{padding:0 20px}
+  .nav-links{display:none}
+  .hero-top,.hero-copy,.hero-foot{left:20px;right:20px}
+  .hero-brand{padding:0 20px}
+  .hero-copy{right:20px;bottom:140px}
+  .hero-foot{padding:0 20px 56px}
+  .hero-block{display:none}
+  .sec{padding:80px 20px}
+  .sh{flex-direction:column;gap:24px;align-items:flex-start}
+  .sh-r{text-align:left;max-width:100%}
+  .about-grid{grid-template-columns:1fr}
+  .svc-grid{grid-template-columns:1fr;gap:40px}
+  .svc-sticky{position:static}
+  .works-track,.works-progress-wrap{padding:0 20px}
+  .feat-grid{grid-template-columns:1fr;gap:2px}
+  .cta-split{grid-template-columns:1fr}
+  .contact-layout{grid-template-columns:1fr;gap:48px}
+  .c-sticky{position:static}
+  .fr{grid-template-columns:1fr}
+  footer{padding:48px 20px 32px}
+  .ft-top{flex-direction:column;gap:36px}
+  .scroll-ind{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="ring"></div>
+<div id="cur-text">VIEW</div>
+
+<!-- NAV -->
+<header>
+  <nav>
+    <a class="logo" href="#">A-CRAFT</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#service">Service</a></li>
+      <li><a href="#works">Works</a></li>
+      <li><a href="#recruit">Recruit</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas id="particle-canvas"></canvas>
+  <div class="hero-accent"></div>
+  <div class="hero-ring"></div>
+  <div class="hero-vline"></div>
+  <div class="hero-labels">
+    <div class="hero-badge"><span class="badge-dot"></span>Interior Design &amp; Construction</div>
+    <div class="hero-est">Est. 2009</div>
+  </div>
+  <div class="hero-spacer"></div>
+  <div class="mag-wrap" id="cta-wrap">
+    <a href="#works" class="btn-circle" id="cta-circle">VIEW<br>WORKS</a>
+  </div>
+  <div class="hero-rule"></div>
+  <div class="hero-brand" id="hero-brand">
+    <div class="hero-brand-inner" id="hero-brand-inner"></div>
+  </div>
+  <div class="hero-rule"></div>
+  <div class="hero-foot">
+    <p class="hero-desc">設計から施工まで一貫して手がける内装のプロフェッショナル集団。あなたの理想の空間を丁寧にカタチにします。</p>
+    <div class="scroll-ind"><span>Scroll</span><div class="s-line"></div></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="mq-wrap">
+  <div class="mq-track">
+    <span class="mq-item">Interior Design<span class="dot"></span></span>
+    <span class="mq-item">A-CRAFT<span class="dot"></span></span>
+    <span class="mq-item">Renovation<span class="dot"></span></span>
+    <span class="mq-item">Store Design<span class="dot"></span></span>
+    <span class="mq-item">住宅リノベーション<span class="dot"></span></span>
+    <span class="mq-item">Office Reform<span class="dot"></span></span>
+    <span class="mq-item">空間プロデュース<span class="dot"></span></span>
+    <span class="mq-item">Interior Design<span class="dot"></span></span>
+    <span class="mq-item">A-CRAFT<span class="dot"></span></span>
+    <span class="mq-item">Renovation<span class="dot"></span></span>
+    <span class="mq-item">Store Design<span class="dot"></span></span>
+    <span class="mq-item">住宅リノベーション<span class="dot"></span></span>
+    <span class="mq-item">Office Reform<span class="dot"></span></span>
+    <span class="mq-item">空間プロデュース<span class="dot"></span></span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="sec sec--w" id="about">
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-l">
+        <div class="sh-tag">About Us</div>
+        <div class="sh-en"><span class="sh-en-inner">WHO WE<br><em>Are</em></span></div>
+        <div class="sh-ja">私たちについて</div>
+      </div>
+      <div class="sh-r">熟練した職人と専門のデザイナーが連携し、<br>ヒアリングから施工・アフターサポートまで<br>ワンストップで対応します。</div>
+    </div>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;padding:0 48px">
+    <div class="about-grid rv">
+      <div class="about-visual">
+        <img src="about.jpg" alt="A-CRAFT 施工実績"/>
+        <span class="av-label">A-CRAFT Interior Division</span>
+        <!-- 回転バッジ -->
+        <svg class="spin-badge" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(0,0,0,.1)" stroke-width="1"/>
+          <circle cx="60" cy="8" r="4"/>
+          <defs><path id="cp" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
+          <text><textPath href="#cp">A-CRAFT • INTERIOR DIVISION • EST.2009 • </textPath></text>
+        </svg>
+      </div>
+      <div class="about-content">
+        <div class="about-yr">2024</div>
+        <p class="about-text">A-CRAFT内装事業部は、住宅・店舗・オフィスなど幅広い空間の内装工事を手がけています。お客様一人ひとりのご要望に寄り添い、デザイン性と機能性を両立した空間づくりをご提案します。</p>
+        <p class="about-text">「A-CRAFTに頼んでよかった」というお客様の言葉が、私たちの何よりの喜びです。</p>
+        <a href="#service" class="arrow-link" style="margin-top:40px;display:inline-flex">Learn More</a>
+      </div>
+    </div>
+    <div class="marquee-wrap rv">
+      <div class="marquee-track">
+        <div class="marquee-item">
+          <span class="marquee-word">Interior Design</span><span class="marquee-dot"></span>
+          <span class="marquee-word accent">空間づくり</span><span class="marquee-dot"></span>
+          <span class="marquee-word">Renovation</span><span class="marquee-dot"></span>
+          <span class="marquee-word accent">こだわりの施工</span><span class="marquee-dot"></span>
+          <span class="marquee-word">Beauty Salon</span><span class="marquee-dot"></span>
+          <span class="marquee-word accent">住宅リノベーション</span><span class="marquee-dot"></span>
+          <span class="marquee-word">Store Design</span><span class="marquee-dot"></span>
+          <span class="marquee-word accent">設計から施工まで</span><span class="marquee-dot"></span>
+        </div>
+        <!-- 無限ループ用の複製 -->
+        <div class="marquee-item" aria-hidden="true">
+          <span class="marquee-word">Interior Design</span><span class="marquee-dot"></span>
+          <span class="marquee-word accent">空間づくり</span><span class="marquee-dot"></span>
+          <span class="marquee-word">Renovation</span><span class="marquee-dot"></span>
+          <span class="marquee-word accent">こだわりの施工</span><span class="marquee-dot"></span>
+          <span class="marquee-word">Beauty Salon</span><span class="marquee-dot"></span>
+          <span class="marquee-word accent">住宅リノベーション</span><span class="marquee-dot"></span>
+          <span class="marquee-word">Store Design</span><span class="marquee-dot"></span>
+          <span class="marquee-word accent">設計から施工まで</span><span class="marquee-dot"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICE -->
+<section class="sec sec--off" id="service">
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-l">
+        <div class="sh-tag">Service</div>
+        <div class="sh-en"><span class="sh-en-inner">WHAT<br>WE <em>Do</em></span></div>
+        <div class="sh-ja">事業内容</div>
+      </div>
+      <div class="sh-r">飲食店・美容室・住空間・商業施設など<br>あらゆる空間をワンストップでプロデュース。</div>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-sticky rv">
+        <p class="svc-desc">ブランディング・デザイン・設計から施工まで、すべての工程を社内で完結します。</p>
+        <a href="#contact" class="arrow-link">お問い合わせ</a>
+      </div>
+      <div class="svc-list rv-s">
+        <a class="svc" href="#contact"><div class="svc-l"><span class="svc-n">01</span><span class="svc-name">住宅リノベーション</span></div><span class="svc-a">↗</span></a>
+        <a class="svc" href="#contact"><div class="svc-l"><span class="svc-n">02</span><span class="svc-name">店舗内装設計・施工</span></div><span class="svc-a">↗</span></a>
+        <a class="svc" href="#contact"><div class="svc-l"><span class="svc-n">03</span><span class="svc-name">オフィスリフォーム</span></div><span class="svc-a">↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="sec sec--w" id="works" style="padding-bottom:32px">
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-l">
+        <div class="sh-tag">Gallery</div>
+        <div class="sh-en"><span class="sh-en-inner">ALL<br><em>Works</em></span></div>
+        <div class="sh-ja">施工ギャラリー</div>
+      </div>
+    </div>
+  </div>
+  <div class="gallery-scroll rv" id="gallery-scroll">
+    <div class="gl-item" onclick="openGallery(0)"><img src="works/高円寺/P1073530.jpg" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(1)"><img src="works/高円寺/P1073533 2.jpg" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(2)"><img src="works/高円寺/P1073534 2.jpg" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(3)"><img src="works/高円寺/P1073536 2.jpg" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(4)"><img src="works/高円寺/P1073543.jpg" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(5)"><img src="works/高円寺/P1073626 3.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(6)"><img src="works/OMA/DSCF1008.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(7)"><img src="works/OMA/DSCF1012.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(8)"><img src="works/OMA/DSCF1019.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(9)"><img src="works/OMA/DSCF1029.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(10)"><img src="works/OMA/DSCF1043.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(11)"><img src="works/OMA/DSCF1046.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(12)"><img src="works/OMA/DSCF1048.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(13)"><img src="works/MONT/_DSF9709.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(14)"><img src="works/MONT/_DSF9720.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(15)"><img src="works/MONT/_DSF9722.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(16)"><img src="works/MONT/_DSF9748.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(17)"><img src="works/MONT/_DSF9754.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(18)"><img src="works/MONT/_DSF9759.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(19)"><img src="works/MONT/_DSF9770.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(20)"><img src="works/MONT/_DSF9789.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(21)"><img src="works/MONT/_DSF9795.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(22)"><img src="works/MONT/_DSF9807.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(23)"><img src="works/MONT/_DSF9849.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(24)"><img src="works/逗子/P1073678-3.jpg" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(25)"><img src="works/逗子/P1073686.jpg" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(26)"><img src="works/逗子/P1073694-4.JPG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(27)"><img src="works/逗子/P1073725-4.jpg" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(28)"><img src="works/逗子/P1073732-4.jpg" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(29)"><img src="works/荻窪/024C51D3-352D-460A-8012-44CA0AB098CA.JPEG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(30)"><img src="works/荻窪/27ACB6C6-3B80-4810-A66C-946DA7A7BAE9.JPEG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(31)"><img src="works/荻窪/5AFECC38-B42F-4851-8A95-3E96CA187454.JPEG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(32)"><img src="works/荻窪/7CF0C814-B2B3-45F4-91A5-7288DEB0DFC0.JPEG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(33)"><img src="works/荻窪/CC8BD1DB-9C94-4192-93B3-654B02322DC7 2.JPEG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(34)"><img src="works/荻窪/D6F76802-4388-446F-B129-9B958D7DBB11.JPEG" loading="lazy"/></div>
+    <div class="gl-item" onclick="openGallery(35)"><img src="works/荻窪/FA7C9700-CFBE-4CCE-A5CC-74E376FF28A3.JPEG" loading="lazy"/></div>
+  </div>
+</section>
+
+<!-- CASES – 施工事例 -->
+<section class="sec sec--off" id="cases">
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-l">
+        <div class="sh-tag">Cases</div>
+        <div class="sh-en"><span class="sh-en-inner">OUR<br><em>Cases</em></span></div>
+        <div class="sh-ja">施工事例</div>
+      </div>
+    </div>
+    <!-- 住宅リノベーション -->
+    <div class="case-cat-block rv">
+      <div class="case-cat-label">
+        <span class="case-cat-num">01</span>
+        <span class="case-cat-name">住宅リノベーション</span>
+        <span class="case-cat-line"></span>
+      </div>
+      <div class="case-grid">
+        <div class="case-card" onclick="openCase('Zushi')">
+          <img src="works/逗子/P1073678-3.jpg" alt="Zushi"/>
+          <div class="case-overlay">
+            <div class="case-c">Residence · 2024</div>
+            <div class="case-n">Zushi</div>
+            <div class="case-cnt">5 photos</div>
+          </div>
+          <div class="case-icon">↗</div>
+        </div>
+        <div class="case-card" onclick="openCase('Ogikubo')">
+          <img src="works/荻窪/024C51D3-352D-460A-8012-44CA0AB098CA.JPEG" alt="Ogikubo"/>
+          <div class="case-overlay">
+            <div class="case-c">Residence · 2024</div>
+            <div class="case-n">Ogikubo</div>
+            <div class="case-cnt">7 photos</div>
+          </div>
+          <div class="case-icon">↗</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 店舗施工 -->
+    <div class="case-cat-block rv">
+      <div class="case-cat-label">
+        <span class="case-cat-num">02</span>
+        <span class="case-cat-name">店舗施工</span>
+        <span class="case-cat-line"></span>
+      </div>
+      <div class="case-grid">
+        <div class="case-card" onclick="openCase('Koenji')">
+          <img src="works/高円寺/P1073530.jpg" alt="Koenji"/>
+          <div class="case-overlay">
+            <div class="case-c">Store · 2023</div>
+            <div class="case-n">Koenji</div>
+            <div class="case-cnt">6 photos</div>
+          </div>
+          <div class="case-icon">↗</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 美容サロン施工 -->
+    <div class="case-cat-block rv">
+      <div class="case-cat-label">
+        <span class="case-cat-num">03</span>
+        <span class="case-cat-name">美容サロン施工</span>
+        <span class="case-cat-line"></span>
+      </div>
+      <div class="case-grid">
+        <div class="case-card" onclick="openCase('OMA')">
+          <img src="works/OMA/DSCF1008.JPG" alt="OMA"/>
+          <div class="case-overlay">
+            <div class="case-c">Beauty Salon · 2023</div>
+            <div class="case-n">OMA</div>
+            <div class="case-cnt">7 photos</div>
+          </div>
+          <div class="case-icon">↗</div>
+        </div>
+        <div class="case-card" onclick="openCase('MONT')">
+          <img src="works/MONT/_DSF9709.JPG" alt="MONT"/>
+          <div class="case-overlay">
+            <div class="case-c">Beauty Salon · 2024</div>
+            <div class="case-n">MONT</div>
+            <div class="case-cnt">11 photos</div>
+          </div>
+          <div class="case-icon">↗</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHOTO OVERLAY -->
+<div class="lb" id="lb">
+  <div class="lb-bg-title" id="lb-bg-title"></div>
+  <div class="lb-header">
+    <div class="lb-info">
+      <div class="lb-title" id="lb-title"></div>
+      <div class="lb-meta" id="lb-meta"></div>
+    </div>
+    <div class="lb-close" onclick="closeLb()">✕</div>
+  </div>
+  <div class="lb-grid" id="lb-grid"></div>
+</div>
+
+<!-- ZOOM VIEW -->
+<div class="lb-zoom" id="lb-zoom" onclick="closeZoom()">
+  <div class="lb-zoom-close" onclick="closeZoom()">✕</div>
+  <div class="lb-zoom-arr lb-zoom-prev" onclick="event.stopPropagation();zoomMove(-1)">←</div>
+  <img id="lb-zoom-img" src="" alt=""/>
+  <div class="lb-zoom-arr lb-zoom-next" onclick="event.stopPropagation();zoomMove(1)">→</div>
+  <div class="lb-zoom-counter" id="lb-zoom-counter"></div>
+</div>
+
+<!-- FEATURE -->
+<section class="sec sec--off" id="feature">
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-l">
+        <div class="sh-tag">Why Us</div>
+        <div class="sh-en"><span class="sh-en-inner">WHY<br><em>Choose</em></span></div>
+        <div class="sh-ja">選ばれる理由</div>
+      </div>
+    </div>
+    <div class="feat-grid rv-s">
+      <div class="feat">
+        <div class="feat-n-wrap"><div class="feat-n">01</div></div>
+        <div class="feat-t">デザインから施工まで一貫対応</div>
+        <div class="feat-b">設計・施工をワンストップで担うことで品質を維持しコストを削減します。</div>
+      </div>
+      <div class="feat">
+        <div class="feat-n-wrap"><div class="feat-n">02</div></div>
+        <div class="feat-t">丁寧なヒアリングとご提案</div>
+        <div class="feat-b">お客様のライフスタイルに寄り添い、納得いくまでご相談いただけます。</div>
+      </div>
+      <div class="feat">
+        <div class="feat-n-wrap"><div class="feat-n">03</div></div>
+        <div class="feat-t">確かな施工品質と保証</div>
+        <div class="feat-b">熟練の職人による高品質な施工と充実したアフターサポート。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-split">
+  <a href="#contact" class="cta-p cta-p--ink" data-bg="CONTACT">
+    <div class="cta-label">01 / お問い合わせ</div>
+    <div class="cta-title">お気軽にご相談ください</div>
+    <div class="cta-body">新規ご依頼・お見積もり・各種ご相談はこちらからどうぞ。担当者より2営業日以内にご連絡します。</div>
+    <div class="mag-btn">Contact Now →</div>
+  </a>
+  <a href="tel:03-XXXX-XXXX" class="cta-p cta-p--terra" data-bg="CALL">
+    <div class="cta-label">02 / お電話</div>
+    <div class="cta-title">03-XXXX-XXXX</div>
+    <div class="cta-body">平日 9:00〜18:00 受付<br>お急ぎの方はお電話でどうぞ。</div>
+    <div class="mag-btn">Call Us →</div>
+  </a>
+</div>
+
+<!-- RECRUIT -->
+<section id="recruit">
+  <div class="recruit-hero">
+    <div class="wrap">
+      <div>
+        <div class="recruit-tag rv">Recruit</div>
+        <h2 class="recruit-headline rv">一緒に<br>空間を<br><em>つくろう。</em></h2>
+        <div class="recruit-numbers rv">
+          <div class="rn-item"><div class="rn-num">15+</div><div class="rn-label">Members</div></div>
+          <div class="rn-item"><div class="rn-num">2009</div><div class="rn-label">Founded</div></div>
+          <div class="rn-item"><div class="rn-num">100+</div><div class="rn-label">Projects</div></div>
+        </div>
+      </div>
+      <div>
+        <p class="recruit-catch rv">A-CRAFTは、設計から施工まで一貫して担う内装のプロ集団です。現場で手を動かしながら、空間づくりの全プロセスに携わりたい方を募集しています。経験・キャリアの有無にかかわらず、意欲ある方のご応募をお待ちしています。</p>
+      </div>
+    </div>
+  </div>
+  <div class="job-grid">
+    <div class="wrap">
+      <div class="job-cards">
+        <div class="job-card rv">
+          <div class="job-card-inner">
+            <div class="jc-tag">01 / Craft</div>
+            <div class="jc-title">大工<br>／内装職人</div>
+            <div class="jc-meta">
+              木工・壁・床など内装全般の<br>
+              施工を担う職人募集。<br>
+              独立志向の方にも対応可。
+            </div>
+            <div class="jc-bottom">
+              <div class="jc-type">Full-time / Contract</div>
+              <div class="jc-arrow">→</div>
+            </div>
+          </div>
+        </div>
+        <div class="job-card rv">
+          <div class="job-card-inner">
+            <div class="jc-tag">02 / Design</div>
+            <div class="jc-title">内装デザイナー<br>／設計</div>
+            <div class="jc-meta">
+              住宅・店舗の空間設計・図面作成<br>
+              から監理まで。CAD経験者優遇。<br>
+              未経験でも熱意があれば可。
+            </div>
+            <div class="jc-bottom">
+              <div class="jc-type">Full-time</div>
+              <div class="jc-arrow">→</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="recruit-cta">
+    <div class="wrap">
+      <div class="rcta-text">
+        <div class="rcta-title">まずは話を聞きに来てください。</div>
+        <div class="rcta-sub">採用に関するご質問・エントリーはメールにて受け付けています。</div>
+      </div>
+      <a href="mailto:recruit@a-craft.co.jp" class="rcta-btn">Apply Now →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec sec--off" id="contact">
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-l">
+        <div class="sh-tag">Contact</div>
+        <div class="sh-en"><span class="sh-en-inner">GET IN<br><em>Touch</em></span></div>
+        <div class="sh-ja">お問い合わせ</div>
+      </div>
+    </div>
+    <div class="contact-layout">
+      <div class="c-sticky rv">
+        <p class="c-body">ご相談・お見積もりは無料です。お気軽にお問い合わせください。</p>
+        <div class="c-list">
+          <div><div class="c-lbl">Tel</div><div class="c-val">03-XXXX-XXXX<br><small style="color:#aaa;font-size:11px">平日 9:00〜18:00</small></div></div>
+          <div><div class="c-lbl">Mail</div><div class="c-val">interior@a-craft.co.jp</div></div>
+          <div><div class="c-lbl">Address</div><div class="c-val">〒XXX-XXXX<br>東京都○○区○○ X-X-X</div></div>
+        </div>
+      </div>
+      <form class="form rv" onsubmit="handleSubmit(event)">
+        <div class="fr">
+          <div class="fg"><label>Name <span class="r">*</span></label><input type="text" placeholder="山田 太郎" required/></div>
+          <div class="fg"><label>Company</label><input type="text" placeholder="株式会社〇〇"/></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>Email <span class="r">*</span></label><input type="email" placeholder="example@mail.com" required/></div>
+          <div class="fg"><label>Tel</label><input type="tel" placeholder="03-XXXX-XXXX"/></div>
+        </div>
+        <div class="fg">
+          <label>Category <span class="r">*</span></label>
+          <select required>
+            <option value="">選択してください</option>
+            <option>お見積もり依頼</option><option>リフォーム相談</option>
+            <option>店舗・オフィス工事</option><option>その他</option>
+          </select>
+        </div>
+        <div class="fg"><label>Message <span class="r">*</span></label><textarea placeholder="施工場所・内容・ご予算など、詳しくお聞かせください。" required></textarea></div>
+        <p class="form-note">※ ご入力いただいた情報は、お問い合わせへの対応以外には使用いたしません。</p>
+        <button type="submit" class="submit">Send Message →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft">
+    <div class="ft-top">
+      <div>
+        <div class="ft-logo">A-CRAFT</div>
+        <div class="ft-tag">Interior Division</div>
+        <div class="ft-addr">〒XXX-XXXX 東京都○○区○○ X-X-X<br>TEL：03-XXXX-XXXX<br>interior@a-craft.co.jp</div>
+      </div>
+      <ul class="ft-nav">
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#service">Service</a></li>
+        <li><a href="#works">Works</a></li>
+        <li><a href="#recruit">Recruit</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="ft-copy">© A-CRAFT Interior Division. All Rights Reserved.</div>
+  </div>
+</footer>
+
+<script>
+/* ── 1. CANVAS PARTICLE FIELD ── */
+(function(){
+  const cv=document.getElementById('particle-canvas');
+  const cx=cv.getContext('2d');
+  let W,H,pts=[];
+  let mx=-9999,my=-9999;
+  function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;build()}
+  function build(){
+    pts=[];const g=52;
+    for(let c=0;c<=Math.ceil(W/g);c++)
+      for(let r=0;r<=Math.ceil(H/g);r++)
+        pts.push({ox:c*g,oy:r*g,x:c*g,y:r*g,vx:0,vy:0});
+  }
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    for(const p of pts){
+      const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy)||1;
+      if(d<180){const s=(1-d/180)*5500*.01;p.vx+=(dx/d)*s;p.vy+=(dy/d)*s}
+      p.vx+=(p.ox-p.x)*.07;p.vy+=(p.oy-p.y)*.07;p.vx*=.80;p.vy*=.80;
+      p.x+=p.vx;p.y+=p.vy;
+      const dd=Math.hypot(p.x-p.ox,p.y-p.oy);
+      cx.beginPath();cx.arc(p.x,p.y,1.3,0,Math.PI*2);
+      cx.fillStyle=`rgba(255,255,255,${.05+Math.min(dd/24,.3)})`;cx.fill();
+    }
+    for(let i=0;i<pts.length;i++){
+      const a=pts[i];if(Math.hypot(a.x-a.ox,a.y-a.oy)<2)continue;
+      for(let j=i+1;j<pts.length;j++){
+        const b=pts[j];if(Math.hypot(b.x-b.ox,b.y-b.oy)<2)continue;
+        const dd=Math.hypot(a.x-b.x,a.y-b.y);
+        if(dd<60){cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);
+          cx.strokeStyle=`rgba(255,255,255,${.04*(1-dd/60)})`;cx.lineWidth=.6;cx.stroke()}
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+  resize();draw();
+})();
+
+/* ── 2. CURSOR ── */
+const cur=document.getElementById('cur'),ring=document.getElementById('ring'),ct=document.getElementById('cur-text');
+let mx2=0,my2=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx2=e.clientX;my2=e.clientY;
+  cur.style.left=mx2+'px';cur.style.top=my2+'px';
+  ct.style.left=mx2+'px';ct.style.top=my2+'px';
+});
+(function ar(){rx+=(mx2-rx)*.11;ry+=(my2-ry)*.11;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ar)})();
+document.querySelectorAll('a,button,.svc,.feat,.cta-p,.submit,.st').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('c-link'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('c-link'));
+});
+
+/* ── 3. A-CRAFT SCRAMBLE → WAVE → REPULSION ── */
+(function(){
+  const CHARS='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&!?';
+  const word='A-CRAFT';
+  const inner=document.getElementById('hero-brand-inner');
+  let letterIdx=0;
+  const items=[...word].map(ch=>{
+    const s=document.createElement('span');
+    s.className='hero-letter';
+    if(ch!=='-'){
+      if(letterIdx%2===0)s.classList.add('ol');
+      letterIdx++;
+    }
+    s.textContent=ch==='-'?ch:CHARS[Math.floor(Math.random()*CHARS.length)];
+    if(ch==='-'){s.classList.add('hero-hyph')}
+    inner.appendChild(s);
+    return{s,final:ch,hyp:ch==='-',waving:false,tx:0,ty:0};
+  });
+  items.forEach((it,i)=>{
+    const DELAY=350+i*110,SCRAM=520;
+    if(it.hyp){
+      /* ハイフンは少し遅れてフェードイン → その後ウェーブに参加 */
+      it.s.style.opacity='0';
+      setTimeout(()=>{
+        it.s.style.transition='opacity .5s ease';
+        it.s.style.opacity='1';
+        setTimeout(()=>{it.waving=true},800);
+      }, 350+1*110+300);
+      return;
+    }
+    const t0=performance.now()+DELAY;let last=0;
+    function tick(now){
+      if(now<t0){requestAnimationFrame(tick);return}
+      it.s.style.opacity='1';
+      const el=now-t0;
+      if(el<SCRAM){if(now-last>52){it.s.textContent=CHARS[Math.floor(Math.random()*CHARS.length)];last=now}requestAnimationFrame(tick)}
+      else{it.s.textContent=it.final;setTimeout(()=>it.waving=true,(items.length-i)*90+200)}
+    }
+    requestAnimationFrame(tick);
+  });
+  let t=0;
+  (function loop(now){
+    t=now*.001;
+    items.forEach((it,i)=>{
+      if(!it.s.style.opacity||it.s.style.opacity==='0')return;
+      const r=it.s.getBoundingClientRect();
+      const cx2=r.left+r.width/2,cy2=r.top+r.height/2;
+      const dx=cx2-mx2,dy=cy2-my2,d=Math.hypot(dx,dy)||1;
+      let rpx=0,rpy=0;
+      if(d<200){const s=(1-d/200)*80;rpx=(dx/d)*s;rpy=(dy/d)*s}
+      const wy=it.waving?Math.sin(t*2.2+i*.55)*10:0;
+      it.tx+=(rpx-it.tx)*.12;it.ty+=(rpy+wy-it.ty)*.12;
+      it.s.style.transform=`translate(${it.tx}px,${it.ty}px)`;
+    });
+    requestAnimationFrame(loop);
+  })(0);
+})();
+
+/* ── 4. MAGNETIC CIRCLE BUTTON ── */
+(function(){
+  const wrap=document.getElementById('cta-wrap'),btn=document.getElementById('cta-circle');
+  if(!wrap||!btn)return;
+  wrap.addEventListener('mousemove',e=>{
+    const r=wrap.getBoundingClientRect();
+    const tx=(e.clientX-r.left-r.width/2)*.45,ty=(e.clientY-r.top-r.height/2)*.45;
+    btn.style.transition='transform .08s linear';btn.style.transform=`translate(${tx}px,${ty}px)`;
+    document.body.classList.add('c-mag');
+  });
+  wrap.addEventListener('mouseleave',()=>{
+    btn.style.transition='transform .6s var(--spring,cubic-bezier(.34,1.56,.64,1))';
+    btn.style.transform='none';document.body.classList.remove('c-mag');
+  });
+})();
+
+/* ── 5. GALLERY DRAG SCROLL ── */
+(function(){
+  const track=document.getElementById('gallery-scroll');
+  if(!track)return;
+  let isDown=false,startX,sl,velX=0,lastX,lastT,rafId,moved=false;
+  track.addEventListener('mousedown',e=>{
+    isDown=true;moved=false;startX=e.pageX-track.offsetLeft;sl=track.scrollLeft;
+    velX=0;lastX=e.pageX;lastT=performance.now();cancelAnimationFrame(rafId);
+    track.classList.add('dragging');
+  });
+  document.addEventListener('mouseup',()=>{
+    if(!isDown)return;isDown=false;track.classList.remove('dragging');
+    (function coast(){velX*=.92;if(Math.abs(velX)<.5)return;track.scrollLeft+=velX;rafId=requestAnimationFrame(coast)})();
+  });
+  track.addEventListener('mousemove',e=>{
+    if(!isDown)return;e.preventDefault();
+    const dx=e.pageX-track.offsetLeft-startX;if(Math.abs(dx)>4)moved=true;
+    const now=performance.now();velX=(e.pageX-lastX)/(now-lastT)*16;
+    lastX=e.pageX;lastT=now;track.scrollLeft=sl-dx*1.1;
+  });
+  track.querySelectorAll('.gl-item').forEach(el=>{
+    el.addEventListener('click',e=>{if(moved)e.stopImmediatePropagation()},true);
+  });
+  track.addEventListener('dragstart',e=>e.preventDefault());
+})();
+
+/* ── 5b. GALLERY / CASE CURSOR ── */
+document.querySelectorAll('.gl-item,.case-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{document.body.classList.add('c-work');document.body.classList.remove('c-link')});
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('c-work'));
+});
+
+/* ── 6. LIGHTBOX ── */
+const GALLERY_PHOTOS=[
+  'works/高円寺/P1073530.jpg','works/高円寺/P1073533 2.jpg','works/高円寺/P1073534 2.jpg',
+  'works/高円寺/P1073536 2.jpg','works/高円寺/P1073543.jpg','works/高円寺/P1073626 3.JPG',
+  'works/OMA/DSCF1008.JPG','works/OMA/DSCF1012.JPG','works/OMA/DSCF1019.JPG',
+  'works/OMA/DSCF1029.JPG','works/OMA/DSCF1043.JPG','works/OMA/DSCF1046.JPG','works/OMA/DSCF1048.JPG',
+  'works/MONT/_DSF9709.JPG','works/MONT/_DSF9720.JPG','works/MONT/_DSF9722.JPG',
+  'works/MONT/_DSF9748.JPG','works/MONT/_DSF9754.JPG','works/MONT/_DSF9759.JPG',
+  'works/MONT/_DSF9770.JPG','works/MONT/_DSF9789.JPG','works/MONT/_DSF9795.JPG',
+  'works/MONT/_DSF9807.JPG','works/MONT/_DSF9849.JPG',
+  'works/逗子/P1073678-3.jpg','works/逗子/P1073686.jpg','works/逗子/P1073694-4.JPG',
+  'works/逗子/P1073725-4.jpg','works/逗子/P1073732-4.jpg',
+  'works/荻窪/024C51D3-352D-460A-8012-44CA0AB098CA.JPEG','works/荻窪/27ACB6C6-3B80-4810-A66C-946DA7A7BAE9.JPEG',
+  'works/荻窪/5AFECC38-B42F-4851-8A95-3E96CA187454.JPEG','works/荻窪/7CF0C814-B2B3-45F4-91A5-7288DEB0DFC0.JPEG',
+  'works/荻窪/CC8BD1DB-9C94-4192-93B3-654B02322DC7 2.JPEG','works/荻窪/D6F76802-4388-446F-B129-9B958D7DBB11.JPEG',
+  'works/荻窪/FA7C9700-CFBE-4CCE-A5CC-74E376FF28A3.JPEG'
+];
+const CASES={
+  'Koenji':{cat:'Store',year:'2023',photos:GALLERY_PHOTOS.slice(0,6)},
+  'OMA':{cat:'Beauty Salon',year:'2023',photos:GALLERY_PHOTOS.slice(6,13)},
+  'MONT':{cat:'Beauty Salon',year:'2024',photos:GALLERY_PHOTOS.slice(13,24)},
+  'Zushi':{cat:'Residence',year:'2024',photos:GALLERY_PHOTOS.slice(24,29)},
+  'Ogikubo':{cat:'Residence',year:'2024',photos:GALLERY_PHOTOS.slice(29)}
+};
+let lbPhotos=[],zoomIdx=0;
+const lb=document.getElementById('lb'),
+  lbTitle=document.getElementById('lb-title'),lbMeta=document.getElementById('lb-meta'),
+  lbBgTitle=document.getElementById('lb-bg-title'),
+  lbGrid=document.getElementById('lb-grid'),
+  lbZoom=document.getElementById('lb-zoom'),lbZoomImg=document.getElementById('lb-zoom-img'),
+  lbZoomCounter=document.getElementById('lb-zoom-counter');
+
+function setGridLayout(n){
+  /* 写真数に応じてグリッドを画面いっぱいに */
+  const cols=n<=3?n:n<=6?3:n<=9?3:4;
+  const rows=Math.ceil(n/cols);
+  lbGrid.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  lbGrid.style.gridTemplateRows=`repeat(${rows},1fr)`;
+  lbGrid.style.height='100%';
+}
+
+function openLb(photos,title,meta){
+  lbPhotos=photos;
+  lbTitle.textContent=title;lbMeta.textContent=meta;
+  lbBgTitle.textContent=title;
+  lbGrid.innerHTML='';
+  photos.forEach((src,i)=>{
+    const d=document.createElement('div');d.className='lb-grid-item';
+    const img=document.createElement('img');img.src=src;img.loading='lazy';
+    d.appendChild(img);
+    d.onclick=()=>openZoom(i);
+    lbGrid.appendChild(d);
+  });
+  setGridLayout(photos.length);
+  lb.style.display='flex';
+  setTimeout(()=>lb.classList.add('visible'),10);
+  document.body.style.overflow='hidden';
+}
+function closeLb(){
+  lb.classList.remove('visible');
+  setTimeout(()=>{lb.style.display='none';document.body.style.overflow=''},300);
+}
+function openZoom(i){
+  zoomIdx=i;
+  lbZoomImg.src=lbPhotos[i];
+  lbZoomCounter.textContent=(i+1)+' / '+lbPhotos.length;
+  lbZoom.classList.add('open');
+}
+function closeZoom(){lbZoom.classList.remove('open')}
+function zoomMove(d){openZoom((zoomIdx+d+lbPhotos.length)%lbPhotos.length)}
+
+function openGallery(idx){openLb(GALLERY_PHOTOS,'Gallery','All Works')}
+function openCase(name){
+  const c=CASES[name];
+  openLb(c.photos,name,c.cat+' · '+c.year);
+}
+document.addEventListener('keydown',e=>{
+  if(lbZoom.classList.contains('open')){
+    if(e.key==='ArrowRight')zoomMove(1);
+    if(e.key==='ArrowLeft')zoomMove(-1);
+    if(e.key==='Escape')closeZoom();
+    return;
+  }
+  if(lb.classList.contains('visible')&&e.key==='Escape')closeLb();
+});
+
+/* ── 7. REVEAL ── */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('on'),i*70);obs.unobserve(e.target)}});
+},{threshold:.06});
+document.querySelectorAll('.rv,.rv-s').forEach(el=>obs.observe(el));
+
+const co=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');co.unobserve(e.target)}});
+},{threshold:.2});
+document.querySelectorAll('.sh-en-inner').forEach(el=>co.observe(el));
+
+/* ── 8. COUNT-UP ── */
+const cu2=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;cu2.unobserve(e.target);
+    const el=e.target,target=parseInt(el.dataset.count),suf=el.dataset.suf||'',t0=performance.now();
+    (function tick(now){
+      const p=Math.min((now-t0)/1400,1);
+      el.textContent=Math.round((p<.5?2*p*p:(1-Math.pow(-2*p+2,2)/2))*target)+suf;
+      if(p<1)requestAnimationFrame(tick);
+    })(t0);
+  });
+},{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>cu2.observe(el));
+
+/* ── 9. FORM ── */
+function handleSubmit(e){
+  e.preventDefault();
+  const btn=e.target.querySelector('.submit');
+  btn.textContent='Sent ✓';btn.style.background='#2d7a4a';btn.disabled=true;
+  setTimeout(()=>{e.target.reset();btn.textContent='Send Message →';btn.style.background='';btn.disabled=false},3000);
+}
+</script>
+</body>
+</html>
