@@ -64,19 +64,24 @@ nav{display:flex;align-items:center;justify-content:space-between;height:72px}
   transform:scaleY(0);transform-origin:top;animation:vlineIn 1.4s var(--ease) .3s forwards}
 @keyframes vlineIn{to{transform:scaleY(1)}}
 
-/* トップラベル行 */
-.hero-labels{position:absolute;top:96px;left:48px;right:48px;z-index:3;
-  display:flex;align-items:center;justify-content:space-between;
-  opacity:0;animation:fuIn .7s var(--ease) .2s forwards}
-.hero-badge{display:inline-flex;align-items:center;gap:10px;font-family:var(--en);
-  font-size:9px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.35)}
-.badge-dot{width:4px;height:4px;background:var(--terra);border-radius:50%;
-  animation:bdot 2.2s ease-in-out infinite}
-@keyframes bdot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(2.5);opacity:.3}}
-.hero-est{font-family:var(--en);font-size:9px;font-weight:300;letter-spacing:.28em;color:rgba(255,255,255,.22)}
 
 /* スペーサー：コンテンツを下半分に寄せる */
 .hero-spacer{flex:1}
+
+/* 巨大タイポ流れ (hero内) */
+.hero-mq{position:absolute;z-index:1;pointer-events:none;user-select:none;
+  width:100%;overflow:hidden;will-change:transform}
+.hero-mq--top{top:clamp(32px,6vh,90px)}
+.hero-mq--btm{bottom:clamp(150px,22vh,260px)}
+.hero-mq-track{display:flex;white-space:nowrap;width:max-content}
+.hero-mq-track--fwd{animation:hmq 26s linear infinite}
+.hero-mq-track--rev{animation:hmq-rev 32s linear infinite}
+@keyframes hmq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes hmq-rev{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+.hero-mq-word{font-family:var(--syne);font-size:clamp(72px,13vw,180px);font-weight:800;
+  letter-spacing:-.04em;text-transform:uppercase;line-height:1;
+  color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.065);padding:0 .18em}
+.hero-mq-word.t{-webkit-text-stroke:1px rgba(200,78,34,.12)}
 
 /* 水平ルール */
 .hero-rule{position:relative;z-index:3;height:1px;background:rgba(255,255,255,.08)}
@@ -99,7 +104,7 @@ nav{display:flex;align-items:center;justify-content:space-between;height:72px}
   font-family:var(--syne);
   font-size:clamp(72px,16.5vw,220px);
   font-weight:700;letter-spacing:-.03em;text-transform:uppercase;
-  color:var(--white);display:inline-block;opacity:0;will-change:transform;transition:color .15s,-webkit-text-stroke .15s}
+  color:var(--bg);display:inline-block;opacity:0;will-change:transform;transition:color .15s,-webkit-text-stroke .15s}
 .hero-letter.ol{
   -webkit-text-stroke:2px var(--white);
   color:transparent!important}
@@ -110,6 +115,7 @@ nav{display:flex;align-items:center;justify-content:space-between;height:72px}
 .hero::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
   opacity:.06;mix-blend-mode:overlay}
+
 
 /* ═══ RECRUIT ═══ */
 .recruit-hero{background:var(--ink);color:var(--white);padding:clamp(80px,10vw,140px) 0 0}
@@ -130,7 +136,7 @@ nav{display:flex;align-items:center;justify-content:space-between;height:72px}
 /* 求人カード */
 .job-grid{padding:clamp(48px,6vw,80px) 0;background:var(--ink)}
 .job-grid .wrap{}
-.job-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.06)}
+.job-cards{display:grid;grid-template-columns:1fr;gap:1px;background:rgba(255,255,255,.06);max-width:640px}
 .job-card{background:var(--ink);padding:clamp(28px,3vw,44px);cursor:pointer;
   border:1px solid rgba(255,255,255,.07);
   transition:background .3s,border-color .3s;position:relative;overflow:hidden}
@@ -179,24 +185,10 @@ nav{display:flex;align-items:center;justify-content:space-between;height:72px}
   clip-path:polygon(28% 0,100% 0,100% 100%,0% 100%);
   opacity:.88}
 
-/* 大きな装飾サークル */
-.hero-ring{position:absolute;z-index:2;pointer-events:none;
-  top:50%;left:50%;
-  width:clamp(340px,55vw,700px);height:clamp(340px,55vw,700px);
-  transform:translate(-52%,-54%);
-  border-radius:50%;border:1px solid rgba(255,255,255,.1);
-  opacity:0;animation:fuIn 1.8s var(--ease) .6s forwards}
-.hero-ring::before{content:'';position:absolute;
-  inset:clamp(24px,4vw,52px);border-radius:50%;
-  border:1px solid rgba(255,255,255,.05)}
-.hero-ring::after{content:'';position:absolute;
-  top:50%;left:50%;
-  width:clamp(8px,1.2vw,14px);height:clamp(8px,1.2vw,14px);
-  transform:translate(-50%,-50%);
-  border-radius:50%;background:var(--terra);opacity:.5}
+
 
 /* ハイフン */
-.hero-hyph{color:var(--terra)!important;opacity:1!important;display:inline-block}
+.hero-hyph{color:var(--bg)!important;opacity:1!important;display:inline-block}
 
 /* CTAボタン：A-CRAFTの上に絶対配置 */
 .mag-wrap{position:absolute;z-index:5;
@@ -351,52 +343,49 @@ nav{display:flex;align-items:center;justify-content:space-between;height:72px}
   transition:color .3s,transform .4s var(--spring)}
 .svc:hover .svc-a{transform:translateX(6px) rotate(-45deg)}
 
-/* ═══ GALLERY ═══ */
-.gallery-scroll{display:flex;gap:4px;overflow-x:auto;overflow-y:hidden;
-  padding:0 48px 16px;cursor:grab;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.gallery-scroll::-webkit-scrollbar{display:none}
-.gallery-scroll.dragging{cursor:grabbing}
-.gl-item{flex:0 0 auto;width:240px;height:160px;overflow:hidden;position:relative;cursor:pointer}
-.gl-item img{width:100%;height:100%;object-fit:cover;display:block;
-  transition:transform .6s var(--ease),filter .4s}
-.gl-item:hover img{transform:scale(1.07);filter:brightness(.8)}
-.gl-item::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .3s}
-.gl-item:hover::after{background:rgba(0,0,0,.08)}
+/* ═══ WORKS (hover list) ═══ */
+.works-split{display:flex;align-items:flex-start;background:var(--ink);color:#fff;min-height:60vh}
+.works-l{flex:0 0 52%;display:flex;flex-direction:column;border-right:.5px solid rgba(255,255,255,.07)}
+.works-l-head{padding:clamp(40px,6vw,72px) 48px clamp(24px,3vw,40px)}
+.works-r{flex:1;position:sticky;top:0;height:100vh;overflow:hidden;background:#0e0e0e}
+.wk-list{border-top:.5px solid rgba(255,255,255,.06)}
+.wk-row{display:flex;align-items:center;justify-content:space-between;
+  padding:clamp(18px,2.2vw,28px) 48px;
+  border-bottom:.5px solid rgba(255,255,255,.06);cursor:pointer;
+  position:relative;overflow:hidden;text-decoration:none;
+  transition:background .25s}
+.wk-row::before{content:'';position:absolute;left:0;top:0;
+  width:3px;height:100%;background:var(--terra);
+  transform:scaleY(0);transform-origin:top;transition:transform .35s var(--ease)}
+.wk-row:hover{background:rgba(255,255,255,.02)}
+.wk-row:hover::before{transform:scaleY(1)}
+.wk-row:hover .wk-name{color:#fff}
+.wk-row:hover .wk-cat{color:rgba(200,78,34,.75)}
+.wk-row:hover .wk-arr{opacity:1;transform:translateX(0)}
+.wk-row-l{display:flex;align-items:center;gap:clamp(14px,2vw,24px)}
+.wk-num{font-family:var(--en);font-size:9px;color:rgba(255,255,255,.18);
+  letter-spacing:.14em;width:20px;flex-shrink:0}
+.wk-name{font-family:var(--syne);font-size:clamp(16px,2vw,24px);font-weight:700;
+  color:rgba(255,255,255,.65);letter-spacing:-.01em;transition:color .25s;line-height:1.1}
+.wk-cat{font-family:var(--en);font-size:8px;color:rgba(255,255,255,.28);
+  letter-spacing:.18em;text-transform:uppercase;margin-top:5px;transition:color .2s}
+.wk-arr{font-family:var(--en);font-size:13px;color:rgba(200,78,34,.8);
+  opacity:0;transform:translateX(-8px);transition:opacity .2s,transform .2s;flex-shrink:0}
+/* preview images */
+.wk-img{position:absolute;inset:0;opacity:0;transition:opacity .55s ease;pointer-events:none}
+.wk-img img{width:100%;height:100%;object-fit:cover;display:block}
+.wk-img.on{opacity:1}
+.wk-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:10px;background:#0e0e0e}
+.wk-ph-icon{font-size:11px;letter-spacing:.28em;color:rgba(255,255,255,.1);text-transform:uppercase}
+/* works count bar */
+.wk-footer{padding:20px 48px;border-top:.5px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;justify-content:space-between}
+.wk-total{font-family:var(--en);font-size:9px;color:rgba(255,255,255,.22);letter-spacing:.18em}
+.wk-cta{font-family:var(--en);font-size:9px;color:rgba(200,78,34,.7);
+  letter-spacing:.18em;text-transform:uppercase;text-decoration:none;transition:color .2s}
+.wk-cta:hover{color:var(--terra)}
 
-/* ═══ CASES – 施工事例 ═══ */
-.case-cat-block{margin-bottom:48px}
-.case-cat-block:last-child{margin-bottom:0}
-.case-cat-label{display:flex;align-items:center;gap:16px;margin-bottom:12px}
-.case-cat-num{font-family:var(--en);font-size:10px;letter-spacing:.2em;
-  color:var(--terra);text-transform:uppercase}
-.case-cat-name{font-family:var(--syne);font-size:11px;font-weight:700;
-  letter-spacing:.15em;text-transform:uppercase;color:var(--ink)}
-.case-cat-line{flex:1;height:1px;background:rgba(0,0,0,.1)}
-.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
-.case-card{position:relative;overflow:hidden;aspect-ratio:3/4;cursor:pointer}
-.case-card img{width:100%;height:100%;object-fit:cover;
-  transition:transform .8s var(--ease)}
-.case-card:hover img{transform:scale(1.09)}
-.case-overlay{position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(8,8,8,.82) 0%,rgba(8,8,8,0) 55%);
-  display:flex;flex-direction:column;justify-content:flex-end;padding:32px;
-  transition:background .5s}
-.case-card:hover .case-overlay{
-  background:linear-gradient(to top,rgba(200,78,34,.85) 0%,rgba(8,8,8,.15) 55%)}
-.case-c{font-family:var(--en);font-size:8px;font-weight:700;
-  letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px}
-.case-n{font-family:var(--syne);font-size:clamp(20px,2.5vw,28px);font-weight:700;
-  color:#fff;line-height:1.15;margin-bottom:6px}
-.case-cnt{font-family:var(--en);font-size:10px;
-  color:rgba(255,255,255,.38);letter-spacing:.12em}
-.case-icon{position:absolute;top:22px;right:22px;
-  width:44px;height:44px;border-radius:50%;
-  border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.3);
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;color:#fff;
-  opacity:0;transform:scale(.8);
-  transition:opacity .35s,transform .35s var(--spring)}
-.case-card:hover .case-icon{opacity:1;transform:scale(1)}
 
 /* ═══ PHOTO OVERLAY ═══ */
 .lb{position:fixed;inset:0;z-index:7000;background:var(--ink);
@@ -560,25 +549,56 @@ footer{background:var(--ink);padding:64px 48px 40px;color:rgba(255,255,255,.4)}
 
 /* ═══ RESP ═══ */
 @media(max-width:960px){
+  /* 横スクロール完全防止 */
+  body{overflow-x:hidden}
   header{padding:0 20px}
   .nav-links{display:none}
+
+  /* ヒーロー */
   .hero-top,.hero-copy,.hero-foot{left:20px;right:20px}
   .hero-brand{padding:0 20px}
   .hero-copy{right:20px;bottom:140px}
-  .hero-foot{padding:0 20px 56px}
+  .hero-foot{padding:16px 20px 36px}
   .hero-block{display:none}
-  .sec{padding:80px 20px}
-  .sh{flex-direction:column;gap:24px;align-items:flex-start}
+  .hero-accent{width:clamp(40px,7vw,72px)}
+  /* VIEWWORKSボタンは非表示 */
+  .mag-wrap{display:none}
+
+  /* セクション共通 */
+  .sec{padding:72px 20px}
+  .sh{flex-direction:column;gap:16px;align-items:flex-start}
   .sh-r{text-align:left;max-width:100%}
+  .wrap,[style*="padding:0 48px"]{padding-left:20px!important;padding-right:20px!important}
+
+  /* About */
   .about-grid{grid-template-columns:1fr}
+
+  /* Service */
   .svc-grid{grid-template-columns:1fr;gap:40px}
   .svc-sticky{position:static}
-  .works-track,.works-progress-wrap{padding:0 20px}
+
+  /* Works */
+  .works-split{flex-direction:column}
+  .works-l{flex:none;width:100%;border-right:none;border-bottom:.5px solid rgba(255,255,255,.07)}
+  .works-r{position:relative;height:60vw;top:auto;width:100%}
+  .works-l-head{padding:40px 20px 24px}
+  .wk-row{padding:16px 20px}
+  .wk-footer{padding:16px 20px}
   .feat-grid{grid-template-columns:1fr;gap:2px}
   .cta-split{grid-template-columns:1fr}
+
+  /* Recruit */
+  .recruit-hero .wrap{grid-template-columns:1fr;gap:32px}
+  .recruit-numbers{gap:28px}
+  .job-cards{grid-template-columns:1fr}
+  .recruit-cta .wrap{flex-direction:column;gap:24px}
+
+  /* Contact */
   .contact-layout{grid-template-columns:1fr;gap:48px}
   .c-sticky{position:static}
   .fr{grid-template-columns:1fr}
+
+  /* Footer */
   footer{padding:48px 20px 32px}
   .ft-top{flex-direction:column;gap:36px}
   .scroll-ind{display:none}
@@ -609,11 +629,19 @@ footer{background:var(--ink);padding:64px 48px 40px;color:rgba(255,255,255,.4)}
 <section class="hero">
   <canvas id="particle-canvas"></canvas>
   <div class="hero-accent"></div>
-  <div class="hero-ring"></div>
   <div class="hero-vline"></div>
-  <div class="hero-labels">
-    <div class="hero-badge"><span class="badge-dot"></span>Interior Design &amp; Construction</div>
-    <div class="hero-est">Est. 2009</div>
+  <!-- 巨大タイポ流れ -->
+  <div class="hero-mq hero-mq--top" id="hm-top">
+    <div class="hero-mq-track hero-mq-track--fwd">
+      <span class="hero-mq-word">INTERIOR</span><span class="hero-mq-word t">DESIGN</span><span class="hero-mq-word">CRAFT</span><span class="hero-mq-word t">SPACE</span><span class="hero-mq-word">STUDIO</span><span class="hero-mq-word t">BUILD</span>
+      <span class="hero-mq-word">INTERIOR</span><span class="hero-mq-word t">DESIGN</span><span class="hero-mq-word">CRAFT</span><span class="hero-mq-word t">SPACE</span><span class="hero-mq-word">STUDIO</span><span class="hero-mq-word t">BUILD</span>
+    </div>
+  </div>
+  <div class="hero-mq hero-mq--btm" id="hm-btm">
+    <div class="hero-mq-track hero-mq-track--rev">
+      <span class="hero-mq-word t">RENOVATION</span><span class="hero-mq-word">A-CRAFT</span><span class="hero-mq-word t">INTERIOR</span><span class="hero-mq-word">WORK</span><span class="hero-mq-word t">DESIGN</span><span class="hero-mq-word">FORM</span>
+      <span class="hero-mq-word t">RENOVATION</span><span class="hero-mq-word">A-CRAFT</span><span class="hero-mq-word t">INTERIOR</span><span class="hero-mq-word">WORK</span><span class="hero-mq-word t">DESIGN</span><span class="hero-mq-word">FORM</span>
+    </div>
   </div>
   <div class="hero-spacer"></div>
   <div class="mag-wrap" id="cta-wrap">
@@ -735,146 +763,59 @@ footer{background:var(--ink);padding:64px 48px 40px;color:rgba(255,255,255,.4)}
   </div>
 </section>
 
-<!-- GALLERY -->
-<section class="sec sec--w" id="works" style="padding-bottom:32px">
-  <div class="wrap">
-    <div class="sh rv">
-      <div class="sh-l">
-        <div class="sh-tag">Gallery</div>
-        <div class="sh-en"><span class="sh-en-inner">ALL<br><em>Works</em></span></div>
-        <div class="sh-ja">施工ギャラリー</div>
+<!-- WORKS -->
+<section id="works">
+  <div class="works-split">
+    <!-- LEFT: list -->
+    <div class="works-l">
+      <div class="works-l-head">
+        <div class="sh">
+          <div class="sh-l">
+            <div class="sh-tag" style="color:rgba(200,78,34,.8)">Works</div>
+            <div class="sh-en" style="color:#fff"><span class="sh-en-inner" style="opacity:1;transform:none">ALL<br><em>Works</em></span></div>
+            <div class="sh-ja" style="color:rgba(255,255,255,.35)">施工ギャラリー</div>
+          </div>
+        </div>
+      </div>
+      <div class="wk-list">
+        <div class="wk-row rv" onmouseenter="wkHover(0)" onmouseleave="wkHover(-1)" onclick="openCase('Koenji')">
+          <div class="wk-row-l"><span class="wk-num">01</span><div><div class="wk-name">高円寺</div><div class="wk-cat">Café · Store · 2024</div></div></div>
+          <span class="wk-arr">→</span>
+        </div>
+        <div class="wk-row rv" onmouseenter="wkHover(1)" onmouseleave="wkHover(-1)" onclick="openCase('OMA')">
+          <div class="wk-row-l"><span class="wk-num">02</span><div><div class="wk-name">OMA</div><div class="wk-cat">Retail · Store · 2024</div></div></div>
+          <span class="wk-arr">→</span>
+        </div>
+        <div class="wk-row rv" onmouseenter="wkHover(2)" onmouseleave="wkHover(-1)" onclick="openCase('MONT')">
+          <div class="wk-row-l"><span class="wk-num">03</span><div><div class="wk-name">MONT</div><div class="wk-cat">Commercial · 2023</div></div></div>
+          <span class="wk-arr">→</span>
+        </div>
+        <div class="wk-row rv" onmouseenter="wkHover(3)" onmouseleave="wkHover(-1)" onclick="openCase('Zushi')">
+          <div class="wk-row-l"><span class="wk-num">04</span><div><div class="wk-name">Zushi</div><div class="wk-cat">Residence · 2024</div></div></div>
+          <span class="wk-arr">→</span>
+        </div>
+        <div class="wk-row rv" onmouseenter="wkHover(4)" onmouseleave="wkHover(-1)" onclick="openCase('Ogikubo')">
+          <div class="wk-row-l"><span class="wk-num">05</span><div><div class="wk-name">Ogikubo</div><div class="wk-cat">Residence · Office · 2023</div></div></div>
+          <span class="wk-arr">→</span>
+        </div>
+      </div>
+      <div class="wk-footer">
+        <span class="wk-total">05 Projects</span>
+        <a href="#cases" class="wk-cta">View all cases →</a>
       </div>
     </div>
-  </div>
-  <div class="gallery-scroll rv" id="gallery-scroll">
-    <div class="gl-item" onclick="openGallery(0)"><img src="works/高円寺/P1073530.jpg" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(1)"><img src="works/高円寺/P1073533 2.jpg" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(2)"><img src="works/高円寺/P1073534 2.jpg" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(3)"><img src="works/高円寺/P1073536 2.jpg" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(4)"><img src="works/高円寺/P1073543.jpg" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(5)"><img src="works/高円寺/P1073626 3.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(6)"><img src="works/OMA/DSCF1008.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(7)"><img src="works/OMA/DSCF1012.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(8)"><img src="works/OMA/DSCF1019.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(9)"><img src="works/OMA/DSCF1029.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(10)"><img src="works/OMA/DSCF1043.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(11)"><img src="works/OMA/DSCF1046.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(12)"><img src="works/OMA/DSCF1048.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(13)"><img src="works/MONT/_DSF9709.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(14)"><img src="works/MONT/_DSF9720.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(15)"><img src="works/MONT/_DSF9722.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(16)"><img src="works/MONT/_DSF9748.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(17)"><img src="works/MONT/_DSF9754.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(18)"><img src="works/MONT/_DSF9759.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(19)"><img src="works/MONT/_DSF9770.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(20)"><img src="works/MONT/_DSF9789.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(21)"><img src="works/MONT/_DSF9795.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(22)"><img src="works/MONT/_DSF9807.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(23)"><img src="works/MONT/_DSF9849.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(24)"><img src="works/逗子/P1073678-3.jpg" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(25)"><img src="works/逗子/P1073686.jpg" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(26)"><img src="works/逗子/P1073694-4.JPG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(27)"><img src="works/逗子/P1073725-4.jpg" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(28)"><img src="works/逗子/P1073732-4.jpg" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(29)"><img src="works/荻窪/024C51D3-352D-460A-8012-44CA0AB098CA.JPEG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(30)"><img src="works/荻窪/27ACB6C6-3B80-4810-A66C-946DA7A7BAE9.JPEG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(31)"><img src="works/荻窪/5AFECC38-B42F-4851-8A95-3E96CA187454.JPEG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(32)"><img src="works/荻窪/7CF0C814-B2B3-45F4-91A5-7288DEB0DFC0.JPEG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(33)"><img src="works/荻窪/CC8BD1DB-9C94-4192-93B3-654B02322DC7 2.JPEG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(34)"><img src="works/荻窪/D6F76802-4388-446F-B129-9B958D7DBB11.JPEG" loading="lazy"/></div>
-    <div class="gl-item" onclick="openGallery(35)"><img src="works/荻窪/FA7C9700-CFBE-4CCE-A5CC-74E376FF28A3.JPEG" loading="lazy"/></div>
-  </div>
-</section>
-
-<!-- CASES – 施工事例 -->
-<section class="sec sec--off" id="cases">
-  <div class="wrap">
-    <div class="sh rv">
-      <div class="sh-l">
-        <div class="sh-tag">Cases</div>
-        <div class="sh-en"><span class="sh-en-inner">OUR<br><em>Cases</em></span></div>
-        <div class="sh-ja">施工事例</div>
-      </div>
-    </div>
-    <!-- 住宅リノベーション -->
-    <div class="case-cat-block rv">
-      <div class="case-cat-label">
-        <span class="case-cat-num">01</span>
-        <span class="case-cat-name">住宅リノベーション</span>
-        <span class="case-cat-line"></span>
-      </div>
-      <div class="case-grid">
-        <div class="case-card" onclick="openCase('Zushi')">
-          <img src="works/逗子/P1073678-3.jpg" alt="Zushi"/>
-          <div class="case-overlay">
-            <div class="case-c">Residence · 2024</div>
-            <div class="case-n">Zushi</div>
-            <div class="case-cnt">5 photos</div>
-          </div>
-          <div class="case-icon">↗</div>
-        </div>
-        <div class="case-card" onclick="openCase('Ogikubo')">
-          <img src="works/荻窪/024C51D3-352D-460A-8012-44CA0AB098CA.JPEG" alt="Ogikubo"/>
-          <div class="case-overlay">
-            <div class="case-c">Residence · 2024</div>
-            <div class="case-n">Ogikubo</div>
-            <div class="case-cnt">7 photos</div>
-          </div>
-          <div class="case-icon">↗</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 店舗施工 -->
-    <div class="case-cat-block rv">
-      <div class="case-cat-label">
-        <span class="case-cat-num">02</span>
-        <span class="case-cat-name">店舗施工</span>
-        <span class="case-cat-line"></span>
-      </div>
-      <div class="case-grid">
-        <div class="case-card" onclick="openCase('Koenji')">
-          <img src="works/高円寺/P1073530.jpg" alt="Koenji"/>
-          <div class="case-overlay">
-            <div class="case-c">Store · 2023</div>
-            <div class="case-n">Koenji</div>
-            <div class="case-cnt">6 photos</div>
-          </div>
-          <div class="case-icon">↗</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 美容サロン施工 -->
-    <div class="case-cat-block rv">
-      <div class="case-cat-label">
-        <span class="case-cat-num">03</span>
-        <span class="case-cat-name">美容サロン施工</span>
-        <span class="case-cat-line"></span>
-      </div>
-      <div class="case-grid">
-        <div class="case-card" onclick="openCase('OMA')">
-          <img src="works/OMA/DSCF1008.JPG" alt="OMA"/>
-          <div class="case-overlay">
-            <div class="case-c">Beauty Salon · 2023</div>
-            <div class="case-n">OMA</div>
-            <div class="case-cnt">7 photos</div>
-          </div>
-          <div class="case-icon">↗</div>
-        </div>
-        <div class="case-card" onclick="openCase('MONT')">
-          <img src="works/MONT/_DSF9709.JPG" alt="MONT"/>
-          <div class="case-overlay">
-            <div class="case-c">Beauty Salon · 2024</div>
-            <div class="case-n">MONT</div>
-            <div class="case-cnt">11 photos</div>
-          </div>
-          <div class="case-icon">↗</div>
-        </div>
-      </div>
+    <!-- RIGHT: preview -->
+    <div class="works-r" id="wk-preview-pane">
+      <div class="wk-img" id="wkimg0"><img src="works/高円寺/P1073530.jpg" loading="lazy" alt="高円寺"/></div>
+      <div class="wk-img" id="wkimg1"><img src="works/OMA/DSCF1008.JPG" loading="lazy" alt="OMA"/></div>
+      <div class="wk-img" id="wkimg2"><img src="works/MONT/_DSF9709.JPG" loading="lazy" alt="MONT"/></div>
+      <div class="wk-img" id="wkimg3"><img src="works/逗子/P1073678-3.jpg" loading="lazy" alt="Zushi"/></div>
+      <div class="wk-img" id="wkimg4"><img src="works/荻窪/024C51D3-352D-460A-8012-44CA0AB098CA.JPEG" loading="lazy" alt="Ogikubo"/></div>
+      <div class="wk-ph"><span class="wk-ph-icon">Hover to preview</span></div>
     </div>
   </div>
 </section>
+
 
 <!-- PHOTO OVERLAY -->
 <div class="lb" id="lb">
@@ -936,12 +877,6 @@ footer{background:var(--ink);padding:64px 48px 40px;color:rgba(255,255,255,.4)}
     <div class="cta-body">新規ご依頼・お見積もり・各種ご相談はこちらからどうぞ。担当者より2営業日以内にご連絡します。</div>
     <div class="mag-btn">Contact Now →</div>
   </a>
-  <a href="tel:03-XXXX-XXXX" class="cta-p cta-p--terra" data-bg="CALL">
-    <div class="cta-label">02 / お電話</div>
-    <div class="cta-title">03-XXXX-XXXX</div>
-    <div class="cta-body">平日 9:00〜18:00 受付<br>お急ぎの方はお電話でどうぞ。</div>
-    <div class="mag-btn">Call Us →</div>
-  </a>
 </div>
 
 <!-- RECRUIT -->
@@ -976,21 +911,6 @@ footer{background:var(--ink);padding:64px 48px 40px;color:rgba(255,255,255,.4)}
             </div>
             <div class="jc-bottom">
               <div class="jc-type">Full-time / Contract</div>
-              <div class="jc-arrow">→</div>
-            </div>
-          </div>
-        </div>
-        <div class="job-card rv">
-          <div class="job-card-inner">
-            <div class="jc-tag">02 / Design</div>
-            <div class="jc-title">内装デザイナー<br>／設計</div>
-            <div class="jc-meta">
-              住宅・店舗の空間設計・図面作成<br>
-              から監理まで。CAD経験者優遇。<br>
-              未経験でも熱意があれば可。
-            </div>
-            <div class="jc-bottom">
-              <div class="jc-type">Full-time</div>
               <div class="jc-arrow">→</div>
             </div>
           </div>
@@ -1075,39 +995,142 @@ footer{background:var(--ink);padding:64px 48px 40px;color:rgba(255,255,255,.4)}
 </footer>
 
 <script>
-/* ── 1. CANVAS PARTICLE FIELD ── */
+/* ── 1. CANVAS PARTICLE FIELD (3-layer) ── */
 (function(){
   const cv=document.getElementById('particle-canvas');
   const cx=cv.getContext('2d');
-  let W,H,pts=[];
+  let W,H,grid=[],orbs=[];
   let mx=-9999,my=-9999;
+  let T=0;
+
   function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;build()}
+
   function build(){
-    pts=[];const g=52;
+    /* Layer A: interactive grid dots */
+    grid=[];const g=56;
     for(let c=0;c<=Math.ceil(W/g);c++)
       for(let r=0;r<=Math.ceil(H/g);r++)
-        pts.push({ox:c*g,oy:r*g,x:c*g,y:r*g,vx:0,vy:0});
+        grid.push({ox:c*g,oy:r*g,x:c*g,y:r*g,vx:0,vy:0});
+
+    /* Layer B: floating accent orbs */
+    orbs=[];
+    const N=22;
+    for(let i=0;i<N;i++){
+      const terra=Math.random()<.28; /* ~28% terra cotta */
+      orbs.push({
+        x:Math.random()*W, y:Math.random()*H,
+        vx:(Math.random()-.5)*.45, vy:(Math.random()-.5)*.45,
+        r:Math.random()*2.8+1.2,
+        pulse:Math.random()*Math.PI*2,
+        speed:Math.random()*.6+.3,
+        terra,
+        alpha:Math.random()*.25+.12
+      });
+    }
   }
+
   function draw(){
     cx.clearRect(0,0,W,H);
-    for(const p of pts){
+    T+=.012;
+
+    /* ── Layer 0: ambient drifting glow ── */
+    {
+      /* autonomous drift path (lissajous-like) */
+      const gx=W*.5+Math.sin(T*.31)*W*.32;
+      const gy=H*.5+Math.cos(T*.19)*H*.28;
+      /* secondary terra cotta glow */
+      const gx2=W*.5+Math.cos(T*.23+1.2)*W*.3;
+      const gy2=H*.5+Math.sin(T*.17+.8)*H*.25;
+
+      const g1=cx.createRadialGradient(gx,gy,0,gx,gy,W*.55);
+      g1.addColorStop(0,'rgba(255,255,255,.028)');
+      g1.addColorStop(1,'rgba(255,255,255,0)');
+      cx.fillStyle=g1;cx.fillRect(0,0,W,H);
+
+      const g2=cx.createRadialGradient(gx2,gy2,0,gx2,gy2,W*.38);
+      g2.addColorStop(0,'rgba(200,78,34,.055)');
+      g2.addColorStop(1,'rgba(200,78,34,0)');
+      cx.fillStyle=g2;cx.fillRect(0,0,W,H);
+    }
+
+    /* ── Layer 0b: slow scan line ── */
+    {
+      const sy=((T*.04)%1.6-.3)*H;
+      const sg=cx.createLinearGradient(0,sy-120,0,sy+120);
+      sg.addColorStop(0,'rgba(255,255,255,0)');
+      sg.addColorStop(.5,'rgba(255,255,255,.018)');
+      sg.addColorStop(1,'rgba(255,255,255,0)');
+      cx.fillStyle=sg;cx.fillRect(0,sy-120,W,240);
+    }
+
+    /* ── Layer A: grid with mouse repulsion ── */
+    for(const p of grid){
       const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy)||1;
-      if(d<180){const s=(1-d/180)*5500*.01;p.vx+=(dx/d)*s;p.vy+=(dy/d)*s}
-      p.vx+=(p.ox-p.x)*.07;p.vy+=(p.oy-p.y)*.07;p.vx*=.80;p.vy*=.80;
+      if(d<200){const s=(1-d/200)*6000*.01;p.vx+=(dx/d)*s;p.vy+=(dy/d)*s}
+      p.vx+=(p.ox-p.x)*.07;p.vy+=(p.oy-p.y)*.07;p.vx*=.78;p.vy*=.78;
       p.x+=p.vx;p.y+=p.vy;
       const dd=Math.hypot(p.x-p.ox,p.y-p.oy);
-      cx.beginPath();cx.arc(p.x,p.y,1.3,0,Math.PI*2);
-      cx.fillStyle=`rgba(255,255,255,${.05+Math.min(dd/24,.3)})`;cx.fill();
+      if(dd<1) continue;
+      cx.beginPath();cx.arc(p.x,p.y,1.4,0,Math.PI*2);
+      cx.fillStyle=`rgba(255,255,255,${.04+Math.min(dd/20,.32)})`;cx.fill();
     }
-    for(let i=0;i<pts.length;i++){
-      const a=pts[i];if(Math.hypot(a.x-a.ox,a.y-a.oy)<2)continue;
-      for(let j=i+1;j<pts.length;j++){
-        const b=pts[j];if(Math.hypot(b.x-b.ox,b.y-b.oy)<2)continue;
+
+    /* grid connection lines (only displaced nodes) */
+    for(let i=0;i<grid.length;i++){
+      const a=grid[i];if(Math.hypot(a.x-a.ox,a.y-a.oy)<3)continue;
+      for(let j=i+1;j<grid.length;j++){
+        const b=grid[j];if(Math.hypot(b.x-b.ox,b.y-b.oy)<3)continue;
         const dd=Math.hypot(a.x-b.x,a.y-b.y);
-        if(dd<60){cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);
-          cx.strokeStyle=`rgba(255,255,255,${.04*(1-dd/60)})`;cx.lineWidth=.6;cx.stroke()}
+        if(dd<72){
+          cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);
+          cx.strokeStyle=`rgba(255,255,255,${.06*(1-dd/72)})`;
+          cx.lineWidth=.7;cx.stroke();
+        }
       }
     }
+
+    /* ── Layer B: floating orbs ── */
+    for(const o of orbs){
+      /* gentle mouse attraction */
+      const dx=mx-o.x,dy=my-o.y,d=Math.hypot(dx,dy)||1;
+      if(mx>0&&d<320){o.vx+=dx/d*.006;o.vy+=dy/d*.006}
+      o.x+=o.vx;o.y+=o.vy;
+      /* wrap edges */
+      if(o.x<-20)o.x=W+20;if(o.x>W+20)o.x=-20;
+      if(o.y<-20)o.y=H+20;if(o.y>H+20)o.y=-20;
+      /* damp */
+      o.vx*=.992;o.vy*=.992;
+      /* pulse */
+      o.pulse+=o.speed*.04;
+      const pulsed=o.r*(1+Math.sin(o.pulse)*.25);
+      const a=o.alpha*(0.7+Math.sin(o.pulse)*.3);
+      if(o.terra){
+        cx.beginPath();cx.arc(o.x,o.y,pulsed,0,Math.PI*2);
+        cx.fillStyle=`rgba(200,78,34,${a})`;cx.fill();
+      } else {
+        cx.beginPath();cx.arc(o.x,o.y,pulsed,0,Math.PI*2);
+        cx.fillStyle=`rgba(255,255,255,${a})`;cx.fill();
+      }
+    }
+
+    /* ── Layer C: constellation between orbs ── */
+    for(let i=0;i<orbs.length;i++){
+      const a=orbs[i];
+      for(let j=i+1;j<orbs.length;j++){
+        const b=orbs[j];
+        const dd=Math.hypot(a.x-b.x,a.y-b.y);
+        if(dd<160){
+          const alpha=.07*(1-dd/160);
+          const mixed=(a.terra||b.terra);
+          cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);
+          cx.strokeStyle=mixed
+            ?`rgba(200,78,34,${alpha*1.4})`
+            :`rgba(255,255,255,${alpha})`;
+          cx.lineWidth=.5;cx.stroke();
+        }
+      }
+    }
+
     requestAnimationFrame(draw);
   }
   window.addEventListener('resize',resize);
@@ -1129,56 +1152,105 @@ document.querySelectorAll('a,button,.svc,.feat,.cta-p,.submit,.st').forEach(el=>
   el.addEventListener('mouseleave',()=>document.body.classList.remove('c-link'));
 });
 
-/* ── 3. A-CRAFT SCRAMBLE → WAVE → REPULSION ── */
+/* ── 3. A-CRAFT SCATTER → SCRAMBLE → FLY → SNAP → WAVE → REPULSION ── */
 (function(){
   const CHARS='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&!?';
   const word='A-CRAFT';
   const inner=document.getElementById('hero-brand-inner');
-  let letterIdx=0;
-  const items=[...word].map(ch=>{
+  const vw=window.innerWidth,vh=window.innerHeight;
+  const zones=[
+    {x:-vw*.38,y:-vh*.30,r:-28},{x:vw*.20,y:-vh*.42,r:18},
+    {x:-vw*.28,y:vh*.32,r:-15},{x:vw*.42,y:-vh*.18,r:32},
+    {x:-vw*.45,y:-vh*.12,r:-22},{x:vw*.10,y:vh*.40,r:12},
+    {x:vw*.36,y:vh*.26,r:-8}
+  ];
+  for(let i=zones.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[zones[i],zones[j]]=[zones[j],zones[i]]}
+
+  const items=[...word].map((ch,i)=>{
     const s=document.createElement('span');
     s.className='hero-letter';
-    if(ch!=='-'){
-      if(letterIdx%2===0)s.classList.add('ol');
-      letterIdx++;
-    }
-    s.textContent=ch==='-'?ch:CHARS[Math.floor(Math.random()*CHARS.length)];
     if(ch==='-'){s.classList.add('hero-hyph')}
+    s.textContent=ch==='-'?ch:CHARS[Math.floor(Math.random()*CHARS.length)];
     inner.appendChild(s);
-    return{s,final:ch,hyp:ch==='-',waving:false,tx:0,ty:0};
+    const z=zones[i]||{x:0,y:0,r:0};
+    return{s,final:ch,hyp:ch==='-',waving:false,tx:0,ty:0,
+           sx:z.x+(Math.random()-.5)*80,
+           sy:z.y+(Math.random()-.5)*60,
+           sr:z.r+(Math.random()-.5)*15,
+           scramTimer:null,settled:false};
   });
+
+  /* Phase 1: place each letter at scatter position (invisible) */
+  items.forEach(it=>{
+    it.s.style.opacity='0';
+    it.s.style.transform=`translate(${it.sx}px,${it.sy}px) rotate(${it.sr}deg)`;
+    it.s.style.transition='none';
+  });
+
+  /* Phase 2: staggered appear + scramble, then fly to origin */
   items.forEach((it,i)=>{
-    const DELAY=350+i*110,SCRAM=520;
     if(it.hyp){
-      /* ハイフンは少し遅れてフェードイン → その後ウェーブに参加 */
-      it.s.style.opacity='0';
+      /* hyphen: just fades in at its position, no scramble */
+      const APPEAR=200+i*100;
       setTimeout(()=>{
-        it.s.style.transition='opacity .5s ease';
+        it.s.style.transition='opacity .25s ease';
         it.s.style.opacity='1';
-        setTimeout(()=>{it.waving=true},800);
-      }, 350+1*110+300);
+      },APPEAR);
+      const FLY=APPEAR+240,DUR=900;
+      setTimeout(()=>{
+        const ease='cubic-bezier(.22,.68,0,1.2)';
+        it.s.style.transition=`transform ${DUR}ms ${ease}, opacity .15s ease`;
+        it.s.style.transform='translate(0px,0px) rotate(0deg)';
+        setTimeout(()=>{it.s.style.transition='';it.s.style.transform='';it.settled=true;setTimeout(()=>{it.waving=true},300);},DUR+20);
+      },FLY);
       return;
     }
-    const t0=performance.now()+DELAY;let last=0;
-    function tick(now){
-      if(now<t0){requestAnimationFrame(tick);return}
+
+    const APPEAR=180+i*100;   /* appear at scatter spot */
+    const FLY   =APPEAR+320; /* start flying in */
+    const DUR   =950;         /* flight duration */
+
+    /* appear with scramble running */
+    setTimeout(()=>{
+      it.s.style.transition='opacity .2s ease';
       it.s.style.opacity='1';
-      const el=now-t0;
-      if(el<SCRAM){if(now-last>52){it.s.textContent=CHARS[Math.floor(Math.random()*CHARS.length)];last=now}requestAnimationFrame(tick)}
-      else{it.s.textContent=it.final;setTimeout(()=>it.waving=true,(items.length-i)*90+200)}
-    }
-    requestAnimationFrame(tick);
+      /* start scrambling */
+      it.scramTimer=setInterval(()=>{
+        it.s.textContent=CHARS[Math.floor(Math.random()*CHARS.length)];
+      },55);
+    },APPEAR);
+
+    /* fly in */
+    setTimeout(()=>{
+      const ease='cubic-bezier(.22,.68,0,1.2)';
+      it.s.style.transition=`transform ${DUR}ms ${ease}`;
+      it.s.style.transform='translate(0px,0px) rotate(0deg)';
+      /* stop scramble mid-flight and snap to final char */
+      setTimeout(()=>{
+        clearInterval(it.scramTimer);
+        it.s.textContent=it.final;
+      },DUR*.55|0);
+      /* hand off to RAF loop after landing */
+      setTimeout(()=>{
+        it.s.style.transition='';
+        it.s.style.transform='';
+        it.settled=true;
+        setTimeout(()=>{it.waving=true},(items.length-i)*60+60);
+      },DUR+20);
+    },FLY);
   });
+
+  /* Phase 3: wave + mouse repulsion */
   let t=0;
   (function loop(now){
     t=now*.001;
     items.forEach((it,i)=>{
-      if(!it.s.style.opacity||it.s.style.opacity==='0')return;
+      if(!it.settled)return;
       const r=it.s.getBoundingClientRect();
       const cx2=r.left+r.width/2,cy2=r.top+r.height/2;
       const dx=cx2-mx2,dy=cy2-my2,d=Math.hypot(dx,dy)||1;
       let rpx=0,rpy=0;
-      if(d<200){const s=(1-d/200)*80;rpx=(dx/d)*s;rpy=(dy/d)*s}
+      if(d<200){const ss=(1-d/200)*80;rpx=(dx/d)*ss;rpy=(dy/d)*ss}
       const wy=it.waving?Math.sin(t*2.2+i*.55)*10:0;
       it.tx+=(rpx-it.tx)*.12;it.ty+=(rpy+wy-it.ty)*.12;
       it.s.style.transform=`translate(${it.tx}px,${it.ty}px)`;
@@ -1203,7 +1275,62 @@ document.querySelectorAll('a,button,.svc,.feat,.cta-p,.submit,.st').forEach(el=>
   });
 })();
 
-/* ── 5. GALLERY DRAG SCROLL ── */
+/* ── 5. PARALLAX + GLITCH ── */
+(function(){
+  const accent=document.querySelector('.hero-accent');
+  const hmTop=document.getElementById('hm-top');
+  const hmBtm=document.getElementById('hm-btm');
+  const foot=document.querySelector('.hero-foot');
+  let tx=0,ty=0,px=0,py=0;
+  document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+  const HW=window.innerWidth/2,HH=window.innerHeight/2;
+  (function loop(){
+    const nx=(tx-HW)/HW,ny=(ty-HH)/HH;
+    px+=(nx-px)*.055;py+=(ny-py)*.055;
+    if(accent) accent.style.transform=`translateX(${px*-18}px)`;
+    if(hmTop)  hmTop.style.transform=`translateY(${py*-22}px) translateX(${px*14}px)`;
+    if(hmBtm)  hmBtm.style.transform=`translateY(${py*16}px) translateX(${px*-10}px)`;
+    if(foot)   foot.style.transform=`translateY(${py*6}px)`;
+    requestAnimationFrame(loop);
+  })();
+
+  /* グリッチ */
+  function glitch(){
+    const els=[...document.querySelectorAll('.hero-letter')].filter(e=>e.style.opacity!=='0');
+    if(!els.length){setTimeout(glitch,2000);return}
+    /* pick 1-2 random letters */
+    const picks=[];
+    picks.push(els[Math.floor(Math.random()*els.length)]);
+    if(Math.random()<.4) picks.push(els[Math.floor(Math.random()*els.length)]);
+    picks.forEach(el=>{
+      /* RGB split */
+      el.style.textShadow=`${3+Math.random()*4}px 0 rgba(255,40,40,.85),${-(2+Math.random()*3)}px 0 rgba(0,220,255,.85)`;
+      el.style.filter='brightness(1.6)';
+      setTimeout(()=>{
+        el.style.textShadow=`${-(4+Math.random()*3)}px 1px rgba(200,78,34,.9),${3+Math.random()*3}px -1px rgba(255,255,255,.5)`;
+        el.style.filter='contrast(1.3)';
+      },55);
+      setTimeout(()=>{
+        el.style.textShadow='none';
+        el.style.filter='';
+      },120+Math.random()*80);
+    });
+    setTimeout(glitch,2200+Math.random()*4000);
+  }
+  setTimeout(glitch,4200);
+})();
+
+/* ── 6. WORKS HOVER PREVIEW ── */
+function wkHover(n){
+  for(let i=0;i<5;i++){
+    const el=document.getElementById('wkimg'+i);
+    if(el) el.classList.toggle('on',i===n);
+  }
+  const ph=document.querySelector('.wk-ph');
+  if(ph) ph.style.opacity=n<0?'1':'0';
+}
+
+/* ── 7. GALLERY DRAG SCROLL ── */
 (function(){
   const track=document.getElementById('gallery-scroll');
   if(!track)return;
