@@ -555,35 +555,41 @@ footer{background:var(--ink);padding:64px 48px 40px;color:rgba(255,255,255,.4)}
   .nav-links{display:none}
 
   /* ヒーロー */
+  .hero{height:100svh;min-height:560px}
   .hero-top,.hero-copy,.hero-foot{left:20px;right:20px}
   .hero-brand{padding:0 20px}
   .hero-copy{right:20px;bottom:140px}
-  .hero-foot{padding:16px 20px 36px}
+  .hero-foot{padding:16px 20px 28px}
   .hero-block{display:none}
-  .hero-accent{width:clamp(40px,7vw,72px)}
+  .hero-accent{width:clamp(28px,5vw,48px)}
+  .hero-mq-word{font-size:clamp(44px,9vw,72px)}
+  .hero-mq--top{top:clamp(20px,4vh,56px)}
+  .hero-mq--btm{bottom:clamp(100px,16vh,180px)}
   /* VIEWWORKSボタンは非表示 */
   .mag-wrap{display:none}
 
   /* セクション共通 */
-  .sec{padding:72px 20px}
-  .sh{flex-direction:column;gap:16px;align-items:flex-start}
+  .sec{padding:56px 20px}
+  .sh{flex-direction:column;gap:12px;align-items:flex-start;margin-bottom:36px}
   .sh-r{text-align:left;max-width:100%}
   .wrap,[style*="padding:0 48px"]{padding-left:20px!important;padding-right:20px!important}
 
   /* About */
   .about-grid{grid-template-columns:1fr}
+  .about-visual{min-height:220px}
 
   /* Service */
   .svc-grid{grid-template-columns:1fr;gap:40px}
   .svc-sticky{position:static}
 
-  /* Works */
+  /* Works — モバイルはプレビューパネル非表示 */
   .works-split{flex-direction:column}
-  .works-l{flex:none;width:100%;border-right:none;border-bottom:.5px solid rgba(255,255,255,.07)}
-  .works-r{position:relative;height:60vw;top:auto;width:100%}
-  .works-l-head{padding:40px 20px 24px}
-  .wk-row{padding:16px 20px}
-  .wk-footer{padding:16px 20px}
+  .works-l{flex:none;width:100%;border-right:none;border-bottom:none}
+  .works-r{display:none}
+  .works-l-head{padding:28px 20px 0}
+  .works-l-head .sh{margin-bottom:0}
+  .wk-row{padding:14px 20px}
+  .wk-footer{padding:12px 20px}
   .feat-grid{grid-template-columns:1fr;gap:2px}
   .cta-split{grid-template-columns:1fr}
 
@@ -599,8 +605,8 @@ footer{background:var(--ink);padding:64px 48px 40px;color:rgba(255,255,255,.4)}
   .fr{grid-template-columns:1fr}
 
   /* Footer */
-  footer{padding:48px 20px 32px}
-  .ft-top{flex-direction:column;gap:36px}
+  footer{padding:40px 20px 28px}
+  .ft-top{flex-direction:column;gap:28px}
   .scroll-ind{display:none}
 }
 </style>
